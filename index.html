@@ -25,6 +25,10 @@
     <div class="header">
         <h1 class="title">3D Creator Studio</h1>
         <p class="subtitle">Create amazing 3D designs!</p>
+        <div class="version-info">
+            <span class="version">v1.0.0</span>
+            <button class="version-history-btn" id="versionHistoryBtn">View History</button>
+        </div>
     </div>
     
     <div class="main-container">
@@ -126,6 +130,41 @@
         <div class="achievements">
             <span class="achievement" title="First Creation">🌟</span>
             <span class="achievement" title="Master Builder">🏆</span>
+        </div>
+    </div>
+
+    <!-- Version History Modal -->
+    <div id="versionHistoryModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Version History</h2>
+            <div class="version-list">
+                <div class="version-item">
+                    <h3>v1.0.0 (Current)</h3>
+                    <ul>
+                        <li>Initial release with basic 3D modeling capabilities</li>
+                        <li>Basic shape creation (cube, sphere, cylinder, cone)</li>
+                        <li>Object transformation tools</li>
+                        <li>Multiple viewports</li>
+                    </ul>
+                </div>
+                <div class="version-item">
+                    <h3>v0.9.0</h3>
+                    <ul>
+                        <li>Added template system (house, robot, car, castle)</li>
+                        <li>Improved UI with kid-friendly design</li>
+                        <li>Added creation animations</li>
+                    </ul>
+                </div>
+                <div class="version-item">
+                    <h3>v0.8.0</h3>
+                    <ul>
+                        <li>Added grid snapping</li>
+                        <li>Added multiple viewports</li>
+                        <li>Improved camera controls</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 

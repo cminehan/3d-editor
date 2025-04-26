@@ -3,6 +3,9 @@
  * Initializes the application and sets up event listeners
  */
 
+// Version information
+const VERSION = '1.0.0';
+
 // Initialize the application on document load
 document.addEventListener('DOMContentLoaded', function() {
     console.log('3D Editor initializing...');
@@ -22,8 +25,38 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set up event listeners for template buttons
     setupTemplateButtons();
     
+    // Set up version history modal
+    setupVersionHistory();
+    
     console.log('3D Editor initialized successfully.');
 });
+
+// Set up version history modal
+function setupVersionHistory() {
+    const modal = document.getElementById('versionHistoryModal');
+    const btn = document.getElementById('versionHistoryBtn');
+    const span = document.getElementsByClassName('close')[0];
+    
+    // Update version display
+    document.querySelector('.version').textContent = `v${VERSION}`;
+    
+    // Open modal
+    btn.onclick = function() {
+        modal.style.display = 'block';
+    };
+    
+    // Close modal
+    span.onclick = function() {
+        modal.style.display = 'none';
+    };
+    
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    };
+}
 
 // Set up shape creation buttons
 function setupShapeButtons() {
