@@ -155,7 +155,18 @@ function initScene() {
         orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
         orbitControls.enableDamping = true;
         orbitControls.dampingFactor = 0.05;
+        orbitControls.screenSpacePanning = true;
+        orbitControls.minDistance = 1;
+        orbitControls.maxDistance = 50;
         console.log('Orbit controls initialized');
+        
+        // Initialize transform controls
+        transformControls = new THREE.TransformControls(camera, renderer.domElement);
+        transformControls.addEventListener('dragging-changed', function(event) {
+            orbitControls.enabled = !event.value;
+        });
+        scene.add(transformControls);
+        console.log('Transform controls initialized');
         
         // Initialize raycaster
         raycaster = new THREE.Raycaster();
@@ -539,3 +550,35 @@ function cleanup() {
 
 // Add cleanup on page unload
 window.addEventListener('unload', cleanup);
+
+// Set active viewport
+function setActiveViewport(view) {
+    console.log('Setting active viewport:', view);
+    
+    if (!camera || !orbitControls) {
+        console.error('Camera or orbit controls not initialized');
+        return;
+    }
+    
+    switch(view) {
+        case 'perspective':
+            camera.position.set(5, 5, 5);
+            camera.lookAt(0, 0, 0);
+            break;
+        case 'top':
+            camera.position.set(0, 10, 0);
+            camera.lookAt(0, 0, 0);
+            break;
+        case 'front':
+            camera.position.set(0, 0, 10);
+            camera.lookAt(0, 0, 0);
+            break;
+        case 'side':
+            camera.position.set(10, 0, 0);
+            camera.lookAt(0, 0, 0);
+            break;
+    }
+    
+    orbitControls.update();
+    console.log('Viewport updated:', view);
+}

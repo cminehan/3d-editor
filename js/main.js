@@ -224,6 +224,8 @@ function deleteSelectedObject() {
 
 // Create template objects
 function createTemplate(template) {
+    console.log('Creating template:', template);
+    
     switch(template) {
         case 'house':
             createHouse();
@@ -237,11 +239,16 @@ function createTemplate(template) {
         case 'castle':
             createCastle();
             break;
+        default:
+            console.error('Unknown template:', template);
+            return;
     }
 }
 
 // Template creation functions
 function createHouse() {
+    console.log('Creating house template...');
+    
     // Create base
     const base = createCube();
     base.scale.set(2, 0.2, 2);
@@ -259,6 +266,7 @@ function createHouse() {
     
     // Group all parts
     const house = new THREE.Group();
+    house.name = 'house_' + Date.now();
     house.add(base, walls, roof);
     objectsGroup.add(house);
     
@@ -267,9 +275,12 @@ function createHouse() {
     
     selectObject(house);
     showCreationEffect(house);
+    console.log('House template created successfully');
 }
 
 function createRobot() {
+    console.log('Creating robot template...');
+    
     // Create body
     const body = createCube();
     body.scale.set(1, 1.2, 0.8);
@@ -300,6 +311,7 @@ function createRobot() {
     
     // Group all parts
     const robot = new THREE.Group();
+    robot.name = 'robot_' + Date.now();
     robot.add(body, head, leftArm, rightArm, leftLeg, rightLeg);
     objectsGroup.add(robot);
     
@@ -308,6 +320,7 @@ function createRobot() {
     
     selectObject(robot);
     showCreationEffect(robot);
+    console.log('Robot template created successfully');
 }
 
 function createCar() {

@@ -15,12 +15,13 @@ function createCube() {
     cube.position.set(0, 0.5, 0);
     cube.castShadow = true;
     cube.receiveShadow = true;
+    cube.name = 'cube_' + Date.now();
     objectsGroup.add(cube);
     
     const obj = new DesignObject(cube, 'cube');
     objects.push(obj);
     
-    console.log('Cube created successfully');
+    console.log('Cube created successfully:', cube.name);
     return cube;
 }
 
@@ -36,12 +37,13 @@ function createSphere() {
     sphere.position.set(0, 0.5, 0);
     sphere.castShadow = true;
     sphere.receiveShadow = true;
+    sphere.name = 'sphere_' + Date.now();
     objectsGroup.add(sphere);
     
     const obj = new DesignObject(sphere, 'sphere');
     objects.push(obj);
     
-    console.log('Sphere created successfully');
+    console.log('Sphere created successfully:', sphere.name);
     return sphere;
 }
 
@@ -57,12 +59,13 @@ function createCylinder() {
     cylinder.position.set(0, 0.5, 0);
     cylinder.castShadow = true;
     cylinder.receiveShadow = true;
+    cylinder.name = 'cylinder_' + Date.now();
     objectsGroup.add(cylinder);
     
     const obj = new DesignObject(cylinder, 'cylinder');
     objects.push(obj);
     
-    console.log('Cylinder created successfully');
+    console.log('Cylinder created successfully:', cylinder.name);
     return cylinder;
 }
 
@@ -78,12 +81,13 @@ function createCone() {
     cone.position.set(0, 0.5, 0);
     cone.castShadow = true;
     cone.receiveShadow = true;
+    cone.name = 'cone_' + Date.now();
     objectsGroup.add(cone);
     
     const obj = new DesignObject(cone, 'cone');
     objects.push(obj);
     
-    console.log('Cone created successfully');
+    console.log('Cone created successfully:', cone.name);
     return cone;
 }
 
