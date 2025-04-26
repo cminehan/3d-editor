@@ -140,6 +140,10 @@ function initScene() {
         console.log('Renderer initialized');
         
         // Initialize orbit controls
+        if (typeof THREE.OrbitControls === 'undefined') {
+            console.error('OrbitControls not loaded. Please check script imports.');
+            throw new Error('OrbitControls not loaded');
+        }
         orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
         orbitControls.enableDamping = true;
         orbitControls.dampingFactor = 0.05;
