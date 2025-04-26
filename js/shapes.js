@@ -9,13 +9,16 @@ function createCube() {
     const geometry = new THREE.BoxGeometry(1, 1, 1);
     const material = new THREE.MeshPhongMaterial({ 
         color: getRandomColor(),
-        shininess: 30
+        shininess: 30,
+        transparent: true,
+        opacity: 1.0
     });
     const cube = new THREE.Mesh(geometry, material);
     cube.position.set(0, 0.5, 0);
     cube.castShadow = true;
     cube.receiveShadow = true;
     cube.name = 'cube_' + Date.now();
+    cube.userData = { type: 'cube' };
     objectsGroup.add(cube);
     
     const obj = new DesignObject(cube, 'cube');
@@ -31,13 +34,16 @@ function createSphere() {
     const geometry = new THREE.SphereGeometry(0.5, 32, 32);
     const material = new THREE.MeshPhongMaterial({ 
         color: getRandomColor(),
-        shininess: 30
+        shininess: 30,
+        transparent: true,
+        opacity: 1.0
     });
     const sphere = new THREE.Mesh(geometry, material);
     sphere.position.set(0, 0.5, 0);
     sphere.castShadow = true;
     sphere.receiveShadow = true;
     sphere.name = 'sphere_' + Date.now();
+    sphere.userData = { type: 'sphere' };
     objectsGroup.add(sphere);
     
     const obj = new DesignObject(sphere, 'sphere');
@@ -53,13 +59,16 @@ function createCylinder() {
     const geometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 32);
     const material = new THREE.MeshPhongMaterial({ 
         color: getRandomColor(),
-        shininess: 30
+        shininess: 30,
+        transparent: true,
+        opacity: 1.0
     });
     const cylinder = new THREE.Mesh(geometry, material);
     cylinder.position.set(0, 0.5, 0);
     cylinder.castShadow = true;
     cylinder.receiveShadow = true;
     cylinder.name = 'cylinder_' + Date.now();
+    cylinder.userData = { type: 'cylinder' };
     objectsGroup.add(cylinder);
     
     const obj = new DesignObject(cylinder, 'cylinder');
@@ -75,13 +84,16 @@ function createCone() {
     const geometry = new THREE.ConeGeometry(0.5, 1, 32);
     const material = new THREE.MeshPhongMaterial({ 
         color: getRandomColor(),
-        shininess: 30
+        shininess: 30,
+        transparent: true,
+        opacity: 1.0
     });
     const cone = new THREE.Mesh(geometry, material);
     cone.position.set(0, 0.5, 0);
     cone.castShadow = true;
     cone.receiveShadow = true;
     cone.name = 'cone_' + Date.now();
+    cone.userData = { type: 'cone' };
     objectsGroup.add(cone);
     
     const obj = new DesignObject(cone, 'cone');

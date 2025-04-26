@@ -165,6 +165,7 @@ function initScene() {
         transformControls.addEventListener('dragging-changed', function(event) {
             orbitControls.enabled = !event.value;
         });
+        transformControls.visible = false;
         scene.add(transformControls);
         console.log('Transform controls initialized');
         
@@ -185,7 +186,8 @@ function initScene() {
         // Add test cube
         const testCube = createCube();
         testCube.position.set(0, 0.5, 0);
-        scene.add(testCube);
+        testCube.name = 'test_cube';
+        testCube.userData = { type: 'cube' };
         console.log('Test cube added to scene');
         
         // Add ambient light
@@ -285,6 +287,7 @@ function onCanvasClick(event) {
 
 // Select an object
 function selectObject(mesh) {
+    console.log('Selecting object:', mesh.name);
     clearSelection();
     selectedObject = mesh;
     selectedObjects.push(mesh);
@@ -295,7 +298,10 @@ function selectObject(mesh) {
     }
     
     // Attach transform controls to selected object
-    transformControls.attach(mesh);
+    if (transformControls) {
+        transformControls.attach(mesh);
+        transformControls.visible = true;
+    }
     
     // Update GUI
     updateGUI(mesh);
@@ -303,6 +309,7 @@ function selectObject(mesh) {
 
 // Clear selection
 function clearSelection() {
+    console.log('Clearing selection');
     if (selectedObjects.length > 0) {
         for (let obj of selectedObjects) {
             if (obj.material) {
@@ -313,7 +320,10 @@ function clearSelection() {
     }
     
     selectedObject = null;
-    transformControls.detach();
+    if (transformControls) {
+        transformControls.detach();
+        transformControls.visible = false;
+    }
     resetGUI();
 }
 
@@ -466,6 +476,8 @@ function snapScale(scale) {
 
 // Update TransformControls with snapping
 function updateTransformControls() {
+    if (!transformControls) return;
+    
     transformControls.addEventListener('objectChange', function(event) {
         const object = event.target.object;
         if (object) {
@@ -477,6 +489,11 @@ function updateTransformControls() {
             
             // Snap scale
             object.scale.copy(snapScale(object.scale));
+            
+            // Update GUI if this is the selected object
+            if (object === selectedObject) {
+                updateGUI(object);
+            }
         }
     });
 }
