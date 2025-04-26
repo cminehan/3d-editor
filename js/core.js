@@ -96,6 +96,12 @@ function initScene() {
         return;
     }
     
+    // Force viewport container to have proper dimensions
+    viewportContainer.style.width = '100%';
+    viewportContainer.style.height = '100%';
+    viewportContainer.style.position = 'relative';
+    viewportContainer.style.backgroundColor = '#ffffff';
+    
     console.log('Viewport container dimensions:', {
         width: viewportContainer.clientWidth,
         height: viewportContainer.clientHeight
@@ -111,6 +117,13 @@ function initScene() {
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     viewportContainer.appendChild(renderer.domElement);
+    
+    // Ensure canvas takes full container size
+    renderer.domElement.style.width = '100%';
+    renderer.domElement.style.height = '100%';
+    renderer.domElement.style.position = 'absolute';
+    renderer.domElement.style.top = '0';
+    renderer.domElement.style.left = '0';
     
     console.log('Renderer initialized with size:', {
         width: renderer.domElement.width,
@@ -142,26 +155,16 @@ function initScene() {
     scene.add(transformControls);
     
     // Add lights
-    const ambientLight = new THREE.AmbientLight(0x404040, 2.0);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
     
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
     directionalLight.position.set(5, 5, 5);
     directionalLight.castShadow = true;
-    directionalLight.shadow.mapSize.width = 1024;
-    directionalLight.shadow.mapSize.height = 1024;
-    directionalLight.shadow.camera.near = 0.5;
-    directionalLight.shadow.camera.far = 50;
-    directionalLight.shadow.camera.left = -10;
-    directionalLight.shadow.camera.right = 10;
-    directionalLight.shadow.camera.top = 10;
-    directionalLight.shadow.camera.bottom = -10;
     scene.add(directionalLight);
     
     // Add grid and ground plane
-    gridHelper = new THREE.GridHelper(20, 20, 0x000000, 0x000000);
-    gridHelper.material.opacity = 0.2;
-    gridHelper.material.transparent = true;
+    gridHelper = new THREE.GridHelper(10, 10);
     scene.add(gridHelper);
     
     const planeGeometry = new THREE.PlaneGeometry(20, 20);
@@ -452,4 +455,48 @@ function updateTransformControls() {
             object.scale.copy(snapScale(object.scale));
         }
     });
+}
+
+function createCube() {
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(geometry, material);
+    cube.position.set(0, 0.5, 0);
+    cube.castShadow = true;
+    cube.receiveShadow = true;
+    scene.add(cube);
+    return cube;
+}
+
+function createHouse() {
+    const group = new THREE.Group();
+    
+    // Create base
+    const baseGeometry = new THREE.BoxGeometry(2, 0.2, 2);
+    const baseMaterial = new THREE.MeshStandardMaterial({ color: 0x808080 });
+    const base = new THREE.Mesh(baseGeometry, baseMaterial);
+    base.position.y = 0.1;
+    base.receiveShadow = true;
+    group.add(base);
+    
+    // Create walls
+    const wallGeometry = new THREE.BoxGeometry(2, 1.5, 2);
+    const wallMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+    const walls = new THREE.Mesh(wallGeometry, wallMaterial);
+    walls.position.y = 0.95;
+    walls.castShadow = true;
+    walls.receiveShadow = true;
+    group.add(walls);
+    
+    // Create roof
+    const roofGeometry = new THREE.ConeGeometry(1.5, 1, 4);
+    const roofMaterial = new THREE.MeshStandardMaterial({ color: 0x8b4513 });
+    const roof = new THREE.Mesh(roofGeometry, roofMaterial);
+    roof.position.y = 2.2;
+    roof.rotation.y = Math.PI / 4;
+    roof.castShadow = true;
+    group.add(roof);
+    
+    scene.add(group);
+    return group;
 }
