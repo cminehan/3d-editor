@@ -127,13 +127,15 @@ function initScene() {
         // Initialize camera
         const aspect = viewportContainer.clientWidth / viewportContainer.clientHeight;
         camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
-        camera.position.set(0, 5, 10);
+        camera.position.set(5, 5, 5);
+        camera.lookAt(0, 0, 0);
         console.log('Camera initialized');
         
         // Initialize renderer with proper pixel ratio
         renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(viewportContainer.clientWidth, viewportContainer.clientHeight);
+        renderer.shadowMap.enabled = true;
         viewportContainer.appendChild(renderer.domElement);
         console.log('Renderer initialized');
         
@@ -152,10 +154,26 @@ function initScene() {
         gui = new dat.GUI();
         console.log('GUI initialized');
         
+        // Add grid helper
+        gridHelper = new THREE.GridHelper(10, 10);
+        scene.add(gridHelper);
+        console.log('Grid helper added to scene');
+        
         // Add test cube
-        const testCube = createTestCube();
+        const testCube = createCube();
+        testCube.position.set(0, 0.5, 0);
         scene.add(testCube);
         console.log('Test cube added to scene');
+        
+        // Add ambient light
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+        
+        // Add directional light
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        directionalLight.position.set(5, 5, 5);
+        directionalLight.castShadow = true;
+        scene.add(directionalLight);
         
         console.log('Scene initialization complete');
     } catch (error) {
