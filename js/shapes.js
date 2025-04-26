@@ -87,12 +87,40 @@ function createCylinder() {
     return cylinder;
 }
 
-// Create a cone
+// Create a pyramid
+function createPyramid() {
+    console.log('Creating pyramid...');
+    const geometry = new THREE.ConeGeometry(1, 2, 4); // 4 sides for pyramid
+    const material = new THREE.MeshPhongMaterial({ 
+        color: 0x9C27B0, // Purple
+        shininess: 30,
+        transparent: true,
+        opacity: 1.0
+    });
+    const pyramid = new THREE.Mesh(geometry, material);
+    pyramid.position.set(0, 1, 0);
+    pyramid.castShadow = true;
+    pyramid.receiveShadow = true;
+    pyramid.name = 'pyramid_' + Date.now();
+    pyramid.userData = { type: 'pyramid' };
+    
+    // Add to scene and objectsGroup
+    scene.add(pyramid);
+    objectsGroup.add(pyramid);
+    
+    const obj = new DesignObject(pyramid, 'pyramid');
+    objects.push(obj);
+    
+    console.log('Pyramid created successfully:', pyramid.name);
+    return pyramid;
+}
+
+// Create a cone (replacing existing cone with a different style)
 function createCone() {
     console.log('Creating cone...');
     const geometry = new THREE.ConeGeometry(1, 2, 32);
     const material = new THREE.MeshPhongMaterial({ 
-        color: 0xF44336, // Bright red
+        color: 0x00BCD4, // Cyan
         shininess: 30,
         transparent: true,
         opacity: 1.0

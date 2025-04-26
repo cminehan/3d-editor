@@ -96,6 +96,25 @@ function initializeUIElements() {
         console.error('Cone button not found');
     }
 
+    const pyramidBtn = document.getElementById('pyramidBtn');
+    if (pyramidBtn) {
+        console.log('Found pyramid button');
+        pyramidBtn.addEventListener('click', () => {
+            console.log('Pyramid button clicked');
+            const pyramid = createPyramid();
+            if (pyramid) {
+                clearSelection();
+                selectedObject = pyramid;
+                selectedObjects = [pyramid];
+                pyramid.material.emissive.setHex(0x555555);
+                updateGUI(pyramid);
+                console.log('Pyramid added and selected');
+            }
+        });
+    } else {
+        console.error('Pyramid button not found');
+    }
+
     const deleteBtn = document.getElementById('deleteBtn');
     if (deleteBtn) {
         deleteBtn.addEventListener('click', () => {
