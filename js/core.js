@@ -89,33 +89,34 @@ function initScene() {
     
     // Create viewport container
     const viewportContainer = document.getElementById('view3d');
-    viewportContainer.style.display = 'grid';
-    viewportContainer.style.gridTemplateColumns = '1fr 1fr';
-    viewportContainer.style.gridTemplateRows = '1fr 1fr';
-    viewportContainer.style.gap = '2px';
-    viewportContainer.style.backgroundColor = '#333';
+    viewportContainer.style.position = 'relative';
+    viewportContainer.style.width = '100%';
+    viewportContainer.style.height = '100%';
     
     // Create renderer
     renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(viewportContainer.clientWidth, viewportContainer.clientHeight);
     renderer.shadowMap.enabled = true;
     viewportContainer.appendChild(renderer.domElement);
     
-    // Create viewport elements
-    createViewport('perspective', 'Perspective View', viewportContainer);
-    createViewport('top', 'Top View', viewportContainer);
-    createViewport('front', 'Front View', viewportContainer);
-    createViewport('side', 'Side View', viewportContainer);
+    // Setup camera
+    camera = new THREE.PerspectiveCamera(75, viewportContainer.clientWidth / viewportContainer.clientHeight, 0.1, 1000);
+    camera.position.set(8, 8, 8);
+    camera.lookAt(scene.position);
     
-    // Setup cameras and controls for each viewport
-    setupViewports();
+    // Setup orbit controls
+    orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
+    orbitControls.enableDamping = true;
+    orbitControls.dampingFactor = 0.05;
+    orbitControls.screenSpacePanning = false;
+    orbitControls.minDistance = 1;
+    orbitControls.maxDistance = 50;
+    orbitControls.maxPolarAngle = Math.PI / 2;
     
     // Setup transform controls
-    transformControls = new THREE.TransformControls(viewports.perspective.camera, renderer.domElement);
+    transformControls = new THREE.TransformControls(camera, renderer.domElement);
     transformControls.addEventListener('dragging-changed', function(event) {
-        Object.values(viewports).forEach(viewport => {
-            viewport.controls.enabled = !event.value;
-        });
+        orbitControls.enabled = !event.value;
     });
     scene.add(transformControls);
     
@@ -163,124 +164,21 @@ function initScene() {
     // Add event listeners
     window.addEventListener('resize', onWindowResize);
     renderer.domElement.addEventListener('click', onCanvasClick);
-    
-    // Update TransformControls with snapping
-    updateTransformControls();
-}
-
-// Create a viewport element
-function createViewport(name, title, container) {
-    const viewport = document.createElement('div');
-    viewport.id = `viewport-${name}`;
-    viewport.style.position = 'relative';
-    viewport.style.width = '100%';
-    viewport.style.height = '100%';
-    viewport.style.backgroundColor = '#f0f0f0';
-    
-    const titleBar = document.createElement('div');
-    titleBar.style.position = 'absolute';
-    titleBar.style.top = '0';
-    titleBar.style.left = '0';
-    titleBar.style.right = '0';
-    titleBar.style.padding = '5px';
-    titleBar.style.backgroundColor = 'rgba(0,0,0,0.5)';
-    titleBar.style.color = 'white';
-    titleBar.style.fontSize = '12px';
-    titleBar.textContent = title;
-    
-    viewport.appendChild(titleBar);
-    container.appendChild(viewport);
-    
-    viewports[name].element = viewport;
-}
-
-// Setup cameras and controls for each viewport
-function setupViewports() {
-    // Perspective view
-    viewports.perspective.camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-    viewports.perspective.camera.position.set(8, 8, 8);
-    viewports.perspective.camera.lookAt(scene.position);
-    
-    // Top view
-    viewports.top.camera = new THREE.OrthographicCamera(-10, 10, 10, -10, 0.1, 1000);
-    viewports.top.camera.position.set(0, 20, 0);
-    viewports.top.camera.lookAt(scene.position);
-    
-    // Front view
-    viewports.front.camera = new THREE.OrthographicCamera(-10, 10, 10, -10, 0.1, 1000);
-    viewports.front.camera.position.set(0, 0, 20);
-    viewports.front.camera.lookAt(scene.position);
-    
-    // Side view
-    viewports.side.camera = new THREE.OrthographicCamera(-10, 10, 10, -10, 0.1, 1000);
-    viewports.side.camera.position.set(20, 0, 0);
-    viewports.side.camera.lookAt(scene.position);
-    
-    // Setup controls for each viewport
-    Object.keys(viewports).forEach(name => {
-        const viewport = viewports[name];
-        viewport.controls = new THREE.OrbitControls(viewport.camera, renderer.domElement);
-        viewport.controls.enableDamping = true;
-        viewport.controls.dampingFactor = 0.05;
-        
-        // Lock rotation for orthographic views
-        if (name !== 'perspective') {
-            viewport.controls.enableRotate = false;
-        }
-    });
-    
-    // Set active viewport
-    setActiveViewport('perspective');
-}
-
-// Set active viewport
-function setActiveViewport(name) {
-    activeViewport = name;
-    const viewport = viewports[name];
-    
-    // Update transform controls
-    transformControls.camera = viewport.camera;
-    
-    // Update renderer size
-    const rect = viewport.element.getBoundingClientRect();
-    renderer.setSize(rect.width, rect.height);
-    
-    // Update camera aspect ratio
-    if (viewport.camera instanceof THREE.PerspectiveCamera) {
-        viewport.camera.aspect = rect.width / rect.height;
-        viewport.camera.updateProjectionMatrix();
-    }
 }
 
 // Animation loop
 function animate() {
     requestAnimationFrame(animate);
-    
-    // Update controls for all viewports
-    Object.values(viewports).forEach(viewport => {
-        viewport.controls.update();
-    });
-    
-    // Render each viewport
-    Object.entries(viewports).forEach(([name, viewport]) => {
-        const rect = viewport.element.getBoundingClientRect();
-        renderer.setViewport(rect.left, rect.top, rect.width, rect.height);
-        renderer.setScissor(rect.left, rect.top, rect.width, rect.height);
-        renderer.setScissorTest(true);
-        renderer.render(scene, viewport.camera);
-    });
+    orbitControls.update();
+    renderer.render(scene, camera);
 }
 
 // Window resize handler
 function onWindowResize() {
-    Object.values(viewports).forEach(viewport => {
-        const rect = viewport.element.getBoundingClientRect();
-        if (viewport.camera instanceof THREE.PerspectiveCamera) {
-            viewport.camera.aspect = rect.width / rect.height;
-            viewport.camera.updateProjectionMatrix();
-        }
-    });
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    const viewportContainer = document.getElementById('view3d');
+    camera.aspect = viewportContainer.clientWidth / viewportContainer.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(viewportContainer.clientWidth, viewportContainer.clientHeight);
 }
 
 // Canvas click handler for object selection
