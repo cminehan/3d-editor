@@ -95,6 +95,12 @@ function initScene() {
     viewportContainer.style.gap = '2px';
     viewportContainer.style.backgroundColor = '#333';
     
+    // Create renderer
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    viewportContainer.appendChild(renderer.domElement);
+    
     // Create viewport elements
     createViewport('perspective', 'Perspective View', viewportContainer);
     createViewport('top', 'Top View', viewportContainer);
@@ -103,6 +109,15 @@ function initScene() {
     
     // Setup cameras and controls for each viewport
     setupViewports();
+    
+    // Setup transform controls
+    transformControls = new THREE.TransformControls(viewports.perspective.camera, renderer.domElement);
+    transformControls.addEventListener('dragging-changed', function(event) {
+        Object.values(viewports).forEach(viewport => {
+            viewport.controls.enabled = !event.value;
+        });
+    });
+    scene.add(transformControls);
     
     // Add lights
     const ambientLight = new THREE.AmbientLight(0x606060);
@@ -201,15 +216,10 @@ function setupViewports() {
     viewports.side.camera.position.set(20, 0, 0);
     viewports.side.camera.lookAt(scene.position);
     
-    // Create renderer
-    renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.enabled = true;
-    
     // Setup controls for each viewport
     Object.keys(viewports).forEach(name => {
         const viewport = viewports[name];
-        viewport.controls = new THREE.OrbitControls(viewport.camera, viewport.element);
+        viewport.controls = new THREE.OrbitControls(viewport.camera, renderer.domElement);
         viewport.controls.enableDamping = true;
         viewport.controls.dampingFactor = 0.05;
         
