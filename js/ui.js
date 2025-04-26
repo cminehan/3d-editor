@@ -119,49 +119,69 @@ templateButtons.forEach(button => {
 });
 
 // Tab switching
-document.getElementById('shapesTab').addEventListener('click', () => {
-    switchTab('shapes');
-});
+const shapesTab = document.getElementById('shapesTab');
+if (shapesTab) {
+    shapesTab.addEventListener('click', () => {
+        switchTab('shapes');
+    });
+}
 
-document.getElementById('textTab').addEventListener('click', () => {
-    switchTab('text');
-});
+const textTab = document.getElementById('textTab');
+if (textTab) {
+    textTab.addEventListener('click', () => {
+        switchTab('text');
+    });
+}
 
-document.getElementById('componentsTab').addEventListener('click', () => {
-    switchTab('components');
-});
+const componentsTab = document.getElementById('componentsTab');
+if (componentsTab) {
+    componentsTab.addEventListener('click', () => {
+        switchTab('components');
+    });
+}
 
 // Text tool handlers
-document.getElementById('textHeightValue').textContent = document.getElementById('textHeight').value;
-document.getElementById('textDepthValue').textContent = document.getElementById('textDepth').value;
+const textHeightValue = document.getElementById('textHeightValue');
+const textHeight = document.getElementById('textHeight');
+const textDepthValue = document.getElementById('textDepthValue');
+const textDepth = document.getElementById('textDepth');
+const addTextBtn = document.getElementById('addTextBtn');
 
-document.getElementById('textHeight').addEventListener('input', (event) => {
-    document.getElementById('textHeightValue').textContent = event.target.value;
-});
+if (textHeightValue && textHeight) {
+    textHeightValue.textContent = textHeight.value;
+    textHeight.addEventListener('input', (event) => {
+        textHeightValue.textContent = event.target.value;
+    });
+}
 
-document.getElementById('textDepth').addEventListener('input', (event) => {
-    document.getElementById('textDepthValue').textContent = event.target.value;
-});
+if (textDepthValue && textDepth) {
+    textDepthValue.textContent = textDepth.value;
+    textDepth.addEventListener('input', (event) => {
+        textDepthValue.textContent = event.target.value;
+    });
+}
 
-document.getElementById('addTextBtn').addEventListener('click', () => {
-    const text = document.getElementById('textInput').value;
-    if (!text) {
-        alert("Please enter text");
-        return;
-    }
-    
-    const height = parseFloat(document.getElementById('textHeight').value);
-    const depth = parseFloat(document.getElementById('textDepth').value);
-    
-    const textMesh = createText(text, height, depth);
-    if (textMesh) {
-        clearSelection();
-        selectedObject = textMesh;
-        selectedObjects = [textMesh];
-        textMesh.material.emissive.setHex(0x555555);
-        updateGUI(textMesh);
-    }
-});
+if (addTextBtn) {
+    addTextBtn.addEventListener('click', () => {
+        const text = document.getElementById('textInput').value;
+        if (!text) {
+            alert("Please enter text");
+            return;
+        }
+        
+        const height = parseFloat(textHeight.value);
+        const depth = parseFloat(textDepth.value);
+        
+        const textMesh = createText(text, height, depth);
+        if (textMesh) {
+            clearSelection();
+            selectedObject = textMesh;
+            selectedObjects = [textMesh];
+            textMesh.material.emissive.setHex(0x555555);
+            updateGUI(textMesh);
+        }
+    });
+}
 
 // Component library items
 const componentItems = document.querySelectorAll('.component-item');
