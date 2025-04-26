@@ -85,6 +85,12 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM fully loaded, initializing 3D environment');
     
     try {
+        // Check if THREE is loaded
+        if (typeof THREE === 'undefined') {
+            console.error('THREE is not loaded. Please check script imports.');
+            throw new Error('THREE is not loaded');
+        }
+        
         // Initialize the scene
         initScene();
         
