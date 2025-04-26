@@ -102,7 +102,7 @@ function initScene() {
     
     // Setup camera
     camera = new THREE.PerspectiveCamera(75, viewportContainer.clientWidth / viewportContainer.clientHeight, 0.1, 1000);
-    camera.position.set(8, 8, 8);
+    camera.position.set(5, 5, 5);
     camera.lookAt(0, 0, 0);
     
     // Setup orbit controls
@@ -122,7 +122,7 @@ function initScene() {
     scene.add(transformControls);
     
     // Add lights
-    const ambientLight = new THREE.AmbientLight(0x404040);
+    const ambientLight = new THREE.AmbientLight(0x404040, 1.5);
     scene.add(ambientLight);
     
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
@@ -139,7 +139,9 @@ function initScene() {
     scene.add(directionalLight);
     
     // Add grid and ground plane
-    gridHelper = new THREE.GridHelper(20, 20);
+    gridHelper = new THREE.GridHelper(20, 20, 0x000000, 0x000000);
+    gridHelper.material.opacity = 0.2;
+    gridHelper.material.transparent = true;
     scene.add(gridHelper);
     
     const planeGeometry = new THREE.PlaneGeometry(20, 20);
@@ -178,6 +180,7 @@ function initScene() {
     const testCube = createCube();
     if (testCube) {
         console.log('Test cube created successfully');
+        selectObject(testCube);
     }
 }
 

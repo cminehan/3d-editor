@@ -6,9 +6,12 @@
 // Create a cube
 function createCube() {
     const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshPhongMaterial({ color: getRandomColor() });
+    const material = new THREE.MeshPhongMaterial({ 
+        color: getRandomColor(),
+        shininess: 30
+    });
     const cube = new THREE.Mesh(geometry, material);
-    cube.position.set(Math.random() * 3 - 1.5, 0.5, Math.random() * 3 - 1.5);
+    cube.position.set(0, 0.5, 0);
     cube.castShadow = true;
     cube.receiveShadow = true;
     objectsGroup.add(cube);
@@ -22,9 +25,12 @@ function createCube() {
 // Create a sphere
 function createSphere() {
     const geometry = new THREE.SphereGeometry(0.5, 32, 32);
-    const material = new THREE.MeshPhongMaterial({ color: getRandomColor() });
+    const material = new THREE.MeshPhongMaterial({ 
+        color: getRandomColor(),
+        shininess: 30
+    });
     const sphere = new THREE.Mesh(geometry, material);
-    sphere.position.set(Math.random() * 3 - 1.5, 0.5, Math.random() * 3 - 1.5);
+    sphere.position.set(0, 0.5, 0);
     sphere.castShadow = true;
     sphere.receiveShadow = true;
     objectsGroup.add(sphere);
@@ -38,9 +44,12 @@ function createSphere() {
 // Create a cylinder
 function createCylinder() {
     const geometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 32);
-    const material = new THREE.MeshPhongMaterial({ color: getRandomColor() });
+    const material = new THREE.MeshPhongMaterial({ 
+        color: getRandomColor(),
+        shininess: 30
+    });
     const cylinder = new THREE.Mesh(geometry, material);
-    cylinder.position.set(Math.random() * 3 - 1.5, 0.5, Math.random() * 3 - 1.5);
+    cylinder.position.set(0, 0.5, 0);
     cylinder.castShadow = true;
     cylinder.receiveShadow = true;
     objectsGroup.add(cylinder);
@@ -54,9 +63,12 @@ function createCylinder() {
 // Create a cone
 function createCone() {
     const geometry = new THREE.ConeGeometry(0.5, 1, 32);
-    const material = new THREE.MeshPhongMaterial({ color: getRandomColor() });
+    const material = new THREE.MeshPhongMaterial({ 
+        color: getRandomColor(),
+        shininess: 30
+    });
     const cone = new THREE.Mesh(geometry, material);
-    cone.position.set(Math.random() * 3 - 1.5, 0.5, Math.random() * 3 - 1.5);
+    cone.position.set(0, 0.5, 0);
     cone.castShadow = true;
     cone.receiveShadow = true;
     objectsGroup.add(cone);
@@ -213,4 +225,19 @@ function ungroupObjects() {
     
     // Clear selection
     clearSelection();
+}
+
+// Helper function to get random color
+function getRandomColor() {
+    const colors = [
+        0x2196F3, // Blue
+        0x4CAF50, // Green
+        0xFFC107, // Amber
+        0xF44336, // Red
+        0x9C27B0, // Purple
+        0x00BCD4, // Cyan
+        0xFF9800, // Orange
+        0x795548  // Brown
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
 }
