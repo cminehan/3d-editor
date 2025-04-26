@@ -6,6 +6,9 @@
 // Main Three.js components
 let scene, camera, renderer;
 let orbitControls, transformControls;
+let raycaster, mouse;
+let viewportContainer;
+let gridHelper;
 
 // Viewport management
 let viewports = {
@@ -36,7 +39,6 @@ let activeViewport = 'perspective';
 // Grid settings
 const gridSize = 1;
 const gridDivisions = 20;
-let gridHelper;
 
 // Objects to manage in the scene
 const objectsGroup = new THREE.Group();
