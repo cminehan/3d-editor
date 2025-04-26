@@ -250,9 +250,9 @@ function handleMouseDown(event) {
     // Update the picking ray with the camera and mouse position
     raycaster.setFromCamera(mouse, camera);
     
-    // Calculate objects intersecting the picking ray, exclude the grid and plane
+    // Calculate objects intersecting the picking ray, exclude the grid
     const intersects = raycaster.intersectObjects(objectsGroup.children, true)
-        .filter(intersect => !(intersect.object === gridHelper || intersect.object === plane));
+        .filter(intersect => !(intersect.object === gridHelper));
     
     if (intersects.length > 0) {
         // If shift is pressed, add to selection
