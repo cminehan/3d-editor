@@ -66,7 +66,7 @@ function initScene() {
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
-    document.body.appendChild(renderer.domElement);
+    document.getElementById('view3d').appendChild(renderer.domElement);
     
     // Add lights
     const ambientLight = new THREE.AmbientLight(0x606060);
