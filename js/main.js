@@ -31,8 +31,12 @@ document.addEventListener('DOMContentLoaded', function() {
 // Animation loop
 function animate() {
     requestAnimationFrame(animate);
-    controls.update();
-    renderer.render(scene, camera);
+    if (orbitControls) {
+        orbitControls.update();
+    }
+    if (renderer && scene && camera) {
+        renderer.render(scene, camera);
+    }
 }
 
 // Window resize handler
@@ -135,6 +139,12 @@ function setupViewControls() {
 
 // Set up transform control buttons
 function setupTransformControls() {
+    // Initialize transform controls if not already initialized
+    if (!transformControls) {
+        transformControls = new THREE.TransformControls(camera, renderer.domElement);
+        scene.add(transformControls);
+    }
+    
     document.getElementById('moveBtn').addEventListener('click', function() {
         transformControls.setMode('translate');
         this.classList.add('active');
