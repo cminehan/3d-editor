@@ -563,3 +563,71 @@ body {
     content: "⤧";
     margin-right: 4px;
 }
+
+/* Properties Panel */
+.properties-panel {
+    background: #f8f8f8;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.transform-controls {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.property-group {
+    background: white;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+
+.property-group h4 {
+    color: #00a2ff;
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.property-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.property-row label {
+    width: 30px;
+    color: #666;
+    font-size: 12px;
+}
+
+.property-row input {
+    flex: 1;
+    padding: 4px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.property-row input:focus {
+    border-color: #00a2ff;
+    outline: none;
+}
+
+.object-details {
+    background: white;
+    padding: 15px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.help-text {
+    color: #666;
+    font-size: 12px;
+    margin-bottom: 15px;
+    text-align: center;
+}

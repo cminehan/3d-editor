@@ -83,6 +83,8 @@ let guiParams = {
 // Font for text creation
 let defaultFont;
 
+let currentMode = 'move'; // 'move', 'rotate', or 'scale'
+
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM fully loaded, initializing 3D environment');
     
@@ -144,6 +146,7 @@ function initScene() {
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(viewportContainer.clientWidth, viewportContainer.clientHeight);
         renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         viewportContainer.appendChild(renderer.domElement);
         console.log('Renderer initialized');
         
@@ -167,9 +170,9 @@ function initScene() {
         });
         
         // Set up transform control modes
-        transformControls.setMode('translate'); // Default to move mode
-        transformControls.setSpace('world'); // Use world space for more intuitive movement
-        transformControls.setSize(0.75); // Make controls slightly smaller
+        transformControls.setMode('translate');
+        transformControls.setSpace('world');
+        transformControls.setSize(0.75);
         transformControls.showX = true;
         transformControls.showY = true;
         transformControls.showZ = true;
@@ -201,27 +204,34 @@ function initScene() {
         scene.add(gridHelper);
         console.log('Grid helper added to scene');
         
-        // Add test cube
-        const testCube = createCube();
-        testCube.position.set(0, 0.5, 0);
-        testCube.name = 'test_cube';
-        testCube.userData = { type: 'cube' };
-        console.log('Test cube added to scene');
-        
         // Add ambient light
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
         scene.add(ambientLight);
         
         // Add directional light
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
         directionalLight.position.set(5, 5, 5);
         directionalLight.castShadow = true;
+        directionalLight.shadow.mapSize.width = 1024;
+        directionalLight.shadow.mapSize.height = 1024;
+        directionalLight.shadow.camera.near = 0.5;
+        directionalLight.shadow.camera.far = 50;
         scene.add(directionalLight);
+        
+        // Add test cube
+        const testCube = createCube();
+        testCube.position.set(0, 1, 0);
+        testCube.name = 'test_cube';
+        testCube.userData = { type: 'cube' };
+        console.log('Test cube added to scene');
+        
+        initTransformControls();
+        initPropertyListeners();
         
         console.log('Scene initialization complete');
     } catch (error) {
         console.error('Error during scene initialization:', error);
-        throw error; // Re-throw to be caught by the DOMContentLoaded handler
+        throw error;
     }
 }
 
@@ -672,4 +682,104 @@ function setActiveViewport(view) {
     
     orbitControls.update();
     console.log('Viewport updated:', view);
+}
+
+function initTransformControls() {
+    transformControls = new THREE.TransformControls(camera, renderer.domElement);
+    scene.add(transformControls);
+    
+    transformControls.addEventListener('dragging-changed', (event) => {
+        orbitControls.enabled = !event.value;
+    });
+
+    transformControls.addEventListener('change', () => {
+        if (selectedObject) {
+            updatePropertyInputs();
+        }
+    });
+}
+
+function updatePropertyInputs() {
+    if (!selectedObject) return;
+    
+    const position = selectedObject.position;
+    const rotation = selectedObject.rotation;
+    const scale = selectedObject.scale;
+    
+    document.getElementById('posX').value = position.x.toFixed(2);
+    document.getElementById('posY').value = position.y.toFixed(2);
+    document.getElementById('posZ').value = position.z.toFixed(2);
+    
+    document.getElementById('rotX').value = THREE.MathUtils.radToDeg(rotation.x).toFixed(2);
+    document.getElementById('rotY').value = THREE.MathUtils.radToDeg(rotation.y).toFixed(2);
+    document.getElementById('rotZ').value = THREE.MathUtils.radToDeg(rotation.z).toFixed(2);
+    
+    document.getElementById('scaleX').value = scale.x.toFixed(2);
+    document.getElementById('scaleY').value = scale.y.toFixed(2);
+    document.getElementById('scaleZ').value = scale.z.toFixed(2);
+}
+
+function setTransformMode(mode) {
+    currentMode = mode;
+    if (selectedObject) {
+        transformControls.setMode(mode);
+    }
+    
+    // Update button states
+    document.querySelectorAll('.tool-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
+}
+
+function initPropertyListeners() {
+    // Transform mode buttons
+    document.querySelectorAll('.tool-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            setTransformMode(btn.dataset.mode);
+        });
+    });
+    
+    // Property input listeners
+    const properties = ['pos', 'rot', 'scale'];
+    const axes = ['X', 'Y', 'Z'];
+    
+    properties.forEach(prop => {
+        axes.forEach(axis => {
+            const input = document.getElementById(`${prop}${axis}`);
+            if (input) {
+                input.addEventListener('change', () => {
+                    if (!selectedObject) return;
+                    
+                    const value = parseFloat(input.value);
+                    if (isNaN(value)) return;
+                    
+                    switch(prop) {
+                        case 'pos':
+                            selectedObject.position[axis.toLowerCase()] = value;
+                            break;
+                        case 'rot':
+                            selectedObject.rotation[axis.toLowerCase()] = THREE.MathUtils.degToRad(value);
+                            break;
+                        case 'scale':
+                            selectedObject.scale[axis.toLowerCase()] = value;
+                            break;
+                    }
+                });
+            }
+        });
+    });
+}
+
+function onObjectSelected(object) {
+    if (selectedObject) {
+        transformControls.detach();
+    }
+    
+    selectedObject = object;
+    
+    if (object) {
+        transformControls.attach(object);
+        updatePropertyInputs();
+    }
 }
