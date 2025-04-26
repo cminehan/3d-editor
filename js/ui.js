@@ -3,10 +3,6 @@
  * Contains event handlers and UI-related functions
  */
 
-// Object selection - raycasting
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
-
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Initializing UI event handlers...');
 

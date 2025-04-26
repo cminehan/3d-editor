@@ -174,6 +174,11 @@ function setupTemplateButtons() {
 
 // Show creation effect for new objects
 function showCreationEffect(object) {
+    if (!object || !object.material) {
+        console.error('Invalid object or missing material:', object);
+        return;
+    }
+
     // Scale up animation
     object.scale.set(0.1, 0.1, 0.1);
     const targetScale = new THREE.Vector3(1, 1, 1);
@@ -191,12 +196,16 @@ function showCreationEffect(object) {
     animate();
     
     // Add highlight effect
-    const originalColor = object.material.color.clone();
-    object.material.emissive.setHex(0x666666);
-    
-    setTimeout(() => {
-        object.material.emissive.setHex(0x000000);
-    }, 1000);
+    if (object.material) {
+        const originalColor = object.material.color.clone();
+        object.material.emissive.setHex(0x666666);
+        
+        setTimeout(() => {
+            if (object.material) {
+                object.material.emissive.setHex(0x000000);
+            }
+        }, 1000);
+    }
 }
 
 // Delete selected object
@@ -204,11 +213,21 @@ function deleteSelectedObject() {
     if (selectedObject) {
         // Fade out animation
         const fadeOut = function() {
-            if (selectedObject.material.opacity > 0.1) {
-                selectedObject.material.opacity -= 0.1;
-                selectedObject.material.transparent = true;
-                requestAnimationFrame(fadeOut);
+            if (selectedObject && selectedObject.material) {
+                if (selectedObject.material.opacity > 0.1) {
+                    selectedObject.material.opacity -= 0.1;
+                    selectedObject.material.transparent = true;
+                    requestAnimationFrame(fadeOut);
+                } else {
+                    objectsGroup.remove(selectedObject);
+                    const index = objects.findIndex(obj => obj.mesh === selectedObject);
+                    if (index > -1) {
+                        objects.splice(index, 1);
+                    }
+                    clearSelection();
+                }
             } else {
+                // If no material, just remove immediately
                 objectsGroup.remove(selectedObject);
                 const index = objects.findIndex(obj => obj.mesh === selectedObject);
                 if (index > -1) {

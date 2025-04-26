@@ -260,9 +260,6 @@ function onCanvasClick(event) {
     }
 
     try {
-        const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
-        
         // Calculate mouse position in normalized device coordinates
         const rect = renderer.domElement.getBoundingClientRect();
         mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
@@ -275,11 +272,11 @@ function onCanvasClick(event) {
         
         if (intersects.length > 0) {
             const object = intersects[0].object;
-            console.log('Object clicked:', object);
+            console.log('Object clicked:', object.name);
             selectObject(object);
         } else {
             console.log('No object clicked, deselecting');
-            deselectAll();
+            clearSelection();
         }
     } catch (error) {
         console.error('Error during canvas click handling:', error);
