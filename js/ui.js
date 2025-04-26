@@ -14,72 +14,109 @@ document.addEventListener('mousemove', handleMouseMove);
 document.addEventListener('wheel', handleMouseWheel);
 
 // Button event listeners for shape creation
-document.getElementById('cubeBtn').addEventListener('click', () => {
-    const cube = createCube();
-    clearSelection();
-    selectedObject = cube;
-    selectedObjects = [cube];
-    cube.material.emissive.setHex(0x555555);
-    updateGUI(cube);
-});
+const cubeBtn = document.getElementById('cubeBtn');
+if (cubeBtn) {
+    cubeBtn.addEventListener('click', () => {
+        const cube = createCube();
+        clearSelection();
+        selectedObject = cube;
+        selectedObjects = [cube];
+        cube.material.emissive.setHex(0x555555);
+        updateGUI(cube);
+    });
+}
 
-document.getElementById('sphereBtn').addEventListener('click', () => {
-    const sphere = createSphere();
-    clearSelection();
-    selectedObject = sphere;
-    selectedObjects = [sphere];
-    sphere.material.emissive.setHex(0x555555);
-    updateGUI(sphere);
-});
+const sphereBtn = document.getElementById('sphereBtn');
+if (sphereBtn) {
+    sphereBtn.addEventListener('click', () => {
+        const sphere = createSphere();
+        clearSelection();
+        selectedObject = sphere;
+        selectedObjects = [sphere];
+        sphere.material.emissive.setHex(0x555555);
+        updateGUI(sphere);
+    });
+}
 
-document.getElementById('cylinderBtn').addEventListener('click', () => {
-    const cylinder = createCylinder();
-    clearSelection();
-    selectedObject = cylinder;
-    selectedObjects = [cylinder];
-    cylinder.material.emissive.setHex(0x555555);
-    updateGUI(cylinder);
-});
+const cylinderBtn = document.getElementById('cylinderBtn');
+if (cylinderBtn) {
+    cylinderBtn.addEventListener('click', () => {
+        const cylinder = createCylinder();
+        clearSelection();
+        selectedObject = cylinder;
+        selectedObjects = [cylinder];
+        cylinder.material.emissive.setHex(0x555555);
+        updateGUI(cylinder);
+    });
+}
 
-document.getElementById('coneBtn').addEventListener('click', () => {
-    const cone = createCone();
-    clearSelection();
-    selectedObject = cone;
-    selectedObjects = [cone];
-    cone.material.emissive.setHex(0x555555);
-    updateGUI(cone);
-});
+const coneBtn = document.getElementById('coneBtn');
+if (coneBtn) {
+    coneBtn.addEventListener('click', () => {
+        const cone = createCone();
+        clearSelection();
+        selectedObject = cone;
+        selectedObjects = [cone];
+        cone.material.emissive.setHex(0x555555);
+        updateGUI(cone);
+    });
+}
 
-document.getElementById('torusBtn').addEventListener('click', () => {
-    const torus = createTorus();
-    clearSelection();
-    selectedObject = torus;
-    selectedObjects = [torus];
-    torus.material.emissive.setHex(0x555555);
-    updateGUI(torus);
-});
-
-document.getElementById('deleteBtn').addEventListener('click', () => {
-    if (selectedObjects.length > 0) {
-        for (let obj of selectedObjects) {
-            const objData = findObjectFromMesh(obj);
-            if (objData) {
-                objects.splice(objects.indexOf(objData), 1);
+const deleteBtn = document.getElementById('deleteBtn');
+if (deleteBtn) {
+    deleteBtn.addEventListener('click', () => {
+        if (selectedObjects.length > 0) {
+            for (let obj of selectedObjects) {
+                const objData = findObjectFromMesh(obj);
+                if (objData) {
+                    objects.splice(objects.indexOf(objData), 1);
+                }
+                objectsGroup.remove(obj);
             }
-            objectsGroup.remove(obj);
+            selectedObject = null;
+            selectedObjects = [];
+            resetGUI();
         }
-        selectedObject = null;
-        selectedObjects = [];
-        resetGUI();
-    }
-});
+    });
+}
 
 // Boolean operation buttons
-document.getElementById('unionBtn').addEventListener('click', performUnion);
-document.getElementById('subtractBtn').addEventListener('click', performSubtract);
-document.getElementById('intersectBtn').addEventListener('click', performIntersect);
-document.getElementById('groupBtn').addEventListener('click', groupObjects);
-document.getElementById('ungroupBtn').addEventListener('click', ungroupObjects);
+const unionBtn = document.getElementById('unionBtn');
+if (unionBtn) {
+    unionBtn.addEventListener('click', performUnion);
+}
+
+const subtractBtn = document.getElementById('subtractBtn');
+if (subtractBtn) {
+    subtractBtn.addEventListener('click', performSubtract);
+}
+
+const groupBtn = document.getElementById('groupBtn');
+if (groupBtn) {
+    groupBtn.addEventListener('click', groupObjects);
+}
+
+// View control buttons
+const viewButtons = document.querySelectorAll('.view-btn');
+viewButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        const view = this.dataset.view;
+        setActiveViewport(view);
+        
+        // Update active state
+        viewButtons.forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+    });
+});
+
+// Template buttons
+const templateButtons = document.querySelectorAll('.template-btn');
+templateButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        const template = this.dataset.template;
+        createTemplate(template);
+    });
+});
 
 // Tab switching
 document.getElementById('shapesTab').addEventListener('click', () => {
