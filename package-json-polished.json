@@ -1,0 +1,27 @@
+{
+  "name": "3d-editor",
+  "version": "1.0.0",
+  "description": "A 3D modeling tool inspired by Tinkercad",
+  "author": "Your Name",
+  "license": "MIT",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve .",
+    "dev": "serve .",
+    "build": "echo 'No build step required'"
+  },
+  "devDependencies": {
+    "serve": "^14.2.0"
+  },
+  "keywords": [
+    "3d",
+    "modeling",
+    "design",
+    "cad",
+    "three.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/3d-editor"
+  }
+}
