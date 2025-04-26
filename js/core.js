@@ -83,16 +83,23 @@ let defaultFont;
 
 // Initialize the 3D environment
 function initScene() {
+    console.log('Initializing 3D scene...');
+    
     // Create scene
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0xffffff);
     
     // Create viewport container
     const viewportContainer = document.getElementById('view3d');
-    viewportContainer.style.position = 'relative';
-    viewportContainer.style.width = '100%';
-    viewportContainer.style.height = '100%';
-    viewportContainer.style.backgroundColor = '#ffffff';
+    if (!viewportContainer) {
+        console.error('Viewport container not found!');
+        return;
+    }
+    
+    console.log('Viewport container dimensions:', {
+        width: viewportContainer.clientWidth,
+        height: viewportContainer.clientHeight
+    });
     
     // Create renderer
     renderer = new THREE.WebGLRenderer({ 
@@ -100,14 +107,23 @@ function initScene() {
         alpha: true
     });
     renderer.setSize(viewportContainer.clientWidth, viewportContainer.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     viewportContainer.appendChild(renderer.domElement);
     
+    console.log('Renderer initialized with size:', {
+        width: renderer.domElement.width,
+        height: renderer.domElement.height
+    });
+    
     // Setup camera
-    camera = new THREE.PerspectiveCamera(75, viewportContainer.clientWidth / viewportContainer.clientHeight, 0.1, 1000);
+    const aspect = viewportContainer.clientWidth / viewportContainer.clientHeight;
+    camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
     camera.position.set(5, 5, 5);
     camera.lookAt(0, 0, 0);
+    
+    console.log('Camera initialized at position:', camera.position);
     
     // Setup orbit controls
     orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -183,24 +199,38 @@ function initScene() {
     // Add a test cube to verify rendering
     const testCube = createCube();
     if (testCube) {
-        console.log('Test cube created successfully');
+        console.log('Test cube created successfully at position:', testCube.position);
         selectObject(testCube);
     }
+    
+    console.log('Scene initialization complete');
 }
 
 // Animation loop
 function animate() {
     requestAnimationFrame(animate);
+    
+    // Update controls
     orbitControls.update();
+    
+    // Render scene
     renderer.render(scene, camera);
 }
 
 // Window resize handler
 function onWindowResize() {
     const viewportContainer = document.getElementById('view3d');
-    camera.aspect = viewportContainer.clientWidth / viewportContainer.clientHeight;
+    if (!viewportContainer) return;
+    
+    const width = viewportContainer.clientWidth;
+    const height = viewportContainer.clientHeight;
+    
+    camera.aspect = width / height;
     camera.updateProjectionMatrix();
-    renderer.setSize(viewportContainer.clientWidth, viewportContainer.clientHeight);
+    
+    renderer.setSize(width, height);
+    
+    console.log('Window resized:', { width, height });
 }
 
 // Canvas click handler for object selection
