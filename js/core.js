@@ -97,12 +97,13 @@ function initScene() {
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(viewportContainer.clientWidth, viewportContainer.clientHeight);
     renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     viewportContainer.appendChild(renderer.domElement);
     
     // Setup camera
     camera = new THREE.PerspectiveCamera(75, viewportContainer.clientWidth / viewportContainer.clientHeight, 0.1, 1000);
     camera.position.set(8, 8, 8);
-    camera.lookAt(scene.position);
+    camera.lookAt(0, 0, 0);
     
     // Setup orbit controls
     orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -121,19 +122,27 @@ function initScene() {
     scene.add(transformControls);
     
     // Add lights
-    const ambientLight = new THREE.AmbientLight(0x606060);
+    const ambientLight = new THREE.AmbientLight(0x404040);
     scene.add(ambientLight);
     
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    directionalLight.position.set(1, 3, 2);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(5, 5, 5);
     directionalLight.castShadow = true;
+    directionalLight.shadow.mapSize.width = 1024;
+    directionalLight.shadow.mapSize.height = 1024;
+    directionalLight.shadow.camera.near = 0.5;
+    directionalLight.shadow.camera.far = 50;
+    directionalLight.shadow.camera.left = -10;
+    directionalLight.shadow.camera.right = 10;
+    directionalLight.shadow.camera.top = 10;
+    directionalLight.shadow.camera.bottom = -10;
     scene.add(directionalLight);
     
     // Add grid and ground plane
-    gridHelper = new THREE.GridHelper(gridSize * gridDivisions, gridDivisions);
+    gridHelper = new THREE.GridHelper(20, 20);
     scene.add(gridHelper);
     
-    const planeGeometry = new THREE.PlaneGeometry(gridSize * gridDivisions, gridSize * gridDivisions);
+    const planeGeometry = new THREE.PlaneGeometry(20, 20);
     const planeMaterial = new THREE.MeshPhongMaterial({ 
         color: 0xcccccc, 
         side: THREE.DoubleSide,
@@ -164,6 +173,12 @@ function initScene() {
     // Add event listeners
     window.addEventListener('resize', onWindowResize);
     renderer.domElement.addEventListener('click', onCanvasClick);
+    
+    // Add a test cube to verify rendering
+    const testCube = createCube();
+    if (testCube) {
+        console.log('Test cube created successfully');
+    }
 }
 
 // Animation loop
