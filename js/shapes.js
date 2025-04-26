@@ -5,6 +5,7 @@
 
 // Create a cube
 function createCube() {
+    console.log('Creating cube...');
     const geometry = new THREE.BoxGeometry(1, 1, 1);
     const material = new THREE.MeshPhongMaterial({ 
         color: getRandomColor(),
@@ -19,11 +20,13 @@ function createCube() {
     const obj = new DesignObject(cube, 'cube');
     objects.push(obj);
     
+    console.log('Cube created successfully');
     return cube;
 }
 
 // Create a sphere
 function createSphere() {
+    console.log('Creating sphere...');
     const geometry = new THREE.SphereGeometry(0.5, 32, 32);
     const material = new THREE.MeshPhongMaterial({ 
         color: getRandomColor(),
@@ -38,11 +41,13 @@ function createSphere() {
     const obj = new DesignObject(sphere, 'sphere');
     objects.push(obj);
     
+    console.log('Sphere created successfully');
     return sphere;
 }
 
 // Create a cylinder
 function createCylinder() {
+    console.log('Creating cylinder...');
     const geometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 32);
     const material = new THREE.MeshPhongMaterial({ 
         color: getRandomColor(),
@@ -57,11 +62,13 @@ function createCylinder() {
     const obj = new DesignObject(cylinder, 'cylinder');
     objects.push(obj);
     
+    console.log('Cylinder created successfully');
     return cylinder;
 }
 
 // Create a cone
 function createCone() {
+    console.log('Creating cone...');
     const geometry = new THREE.ConeGeometry(0.5, 1, 32);
     const material = new THREE.MeshPhongMaterial({ 
         color: getRandomColor(),
@@ -76,6 +83,7 @@ function createCone() {
     const obj = new DesignObject(cone, 'cone');
     objects.push(obj);
     
+    console.log('Cone created successfully');
     return cone;
 }
 
