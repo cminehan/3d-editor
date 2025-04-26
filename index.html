@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A browser-based 3D modeling tool for creating 3D print designs">
-    <meta name="keywords" content="3D modeling, 3D printing, design, tinkercad alternative">
+    <meta name="description" content="A fun 3D modeling tool for young creators">
+    <meta name="keywords" content="3D modeling, kids, design, creativity">
     <meta name="author" content="Your Name">
-    <title>3D Design Tool</title>
+    <title>3D Creator Studio</title>
     <link rel="icon" href="assets/favicon.ico">
     
     <!-- External CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/stylesheet.css">
     
     <!-- External Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -18,63 +18,115 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three-csg-ts/3.1.13/three-csg.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three/r128/examples/js/loaders/FontLoader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three/r128/examples/js/geometries/TextGeometry.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/TransformControls.js"></script>
 </head>
 <body>
     <div class="header">
-        <h1 class="title">3D Design Tool</h1>
-        <p class="subtitle">A 3D modeling interface built for Augie, Max & Fred</p>
+        <h1 class="title">3D Creator Studio</h1>
+        <p class="subtitle">Create amazing 3D designs!</p>
     </div>
     
-    <div class="tab-bar">
-        <div class="tab active" id="shapesTab">Shapes</div>
-        <div class="tab" id="textTab">Text</div>
-        <div class="tab" id="componentsTab">Components</div>
-    </div>
-    
-    <div id="view3d"></div>
-    
-    <div id="toolbar">
-        <button id="cubeBtn">Add Cube</button>
-        <button id="sphereBtn">Add Sphere</button>
-        <button id="cylinderBtn">Add Cylinder</button>
-        <button id="coneBtn">Add Cone</button>
-        <button id="torusBtn">Add Torus</button>
-        <button id="deleteBtn">Delete Selected</button>
-    </div>
-    
-    <div id="textTools">
-        <input type="text" id="textInput" placeholder="Enter text...">
-        <button id="addTextBtn">Add Text</button>
-        <div>
-            <label>Height: </label>
-            <input type="range" id="textHeight" min="0.1" max="2" step="0.1" value="0.5">
-            <span id="textHeightValue">0.5</span>
+    <div class="main-container">
+        <div class="sidebar">
+            <div class="tool-section">
+                <h3>Create</h3>
+                <div class="tool-buttons">
+                    <button class="tool-btn" id="cubeBtn" title="Add a cube">
+                        <span class="icon">⬛</span>
+                        <span class="label">Cube</span>
+                    </button>
+                    <button class="tool-btn" id="sphereBtn" title="Add a sphere">
+                        <span class="icon">⚪</span>
+                        <span class="label">Sphere</span>
+                    </button>
+                    <button class="tool-btn" id="cylinderBtn" title="Add a cylinder">
+                        <span class="icon">⭕</span>
+                        <span class="label">Cylinder</span>
+                    </button>
+                    <button class="tool-btn" id="coneBtn" title="Add a cone">
+                        <span class="icon">🔺</span>
+                        <span class="label">Cone</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="tool-section">
+                <h3>Modify</h3>
+                <div class="tool-buttons">
+                    <button class="tool-btn" id="moveBtn" title="Move objects">
+                        <span class="icon">✋</span>
+                        <span class="label">Move</span>
+                    </button>
+                    <button class="tool-btn" id="rotateBtn" title="Rotate objects">
+                        <span class="icon">🔄</span>
+                        <span class="label">Rotate</span>
+                    </button>
+                    <button class="tool-btn" id="scaleBtn" title="Resize objects">
+                        <span class="icon">📏</span>
+                        <span class="label">Resize</span>
+                    </button>
+                    <button class="tool-btn" id="deleteBtn" title="Delete selected">
+                        <span class="icon">🗑️</span>
+                        <span class="label">Delete</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="tool-section">
+                <h3>Combine</h3>
+                <div class="tool-buttons">
+                    <button class="tool-btn" id="unionBtn" title="Join objects together">
+                        <span class="icon">➕</span>
+                        <span class="label">Join</span>
+                    </button>
+                    <button class="tool-btn" id="subtractBtn" title="Cut out shapes">
+                        <span class="icon">➖</span>
+                        <span class="label">Cut</span>
+                    </button>
+                    <button class="tool-btn" id="groupBtn" title="Group objects">
+                        <span class="icon">👥</span>
+                        <span class="label">Group</span>
+                    </button>
+                </div>
+            </div>
         </div>
-        <div>
-            <label>Depth: </label>
-            <input type="range" id="textDepth" min="0.1" max="1" step="0.1" value="0.2">
-            <span id="textDepthValue">0.2</span>
+        
+        <div id="view3d"></div>
+        
+        <div class="right-panel">
+            <div class="view-controls">
+                <button class="view-btn" data-view="perspective" title="3D View">3D</button>
+                <button class="view-btn" data-view="top" title="Top View">Top</button>
+                <button class="view-btn" data-view="front" title="Front View">Front</button>
+                <button class="view-btn" data-view="side" title="Side View">Side</button>
+            </div>
+            
+            <div class="properties-panel">
+                <h3>Properties</h3>
+                <div id="object-properties">
+                    <p class="help-text">Select an object to see its properties</p>
+                </div>
+            </div>
+            
+            <div class="templates-panel">
+                <h3>Quick Start</h3>
+                <div class="template-buttons">
+                    <button class="template-btn" data-template="house">🏠 House</button>
+                    <button class="template-btn" data-template="robot">🤖 Robot</button>
+                    <button class="template-btn" data-template="car">🚗 Car</button>
+                    <button class="template-btn" data-template="castle">🏰 Castle</button>
+                </div>
+            </div>
         </div>
     </div>
     
-    <div class="operations">
-        <button id="unionBtn">Unite</button>
-        <button id="subtractBtn">Subtract</button>
-        <button id="intersectBtn">Intersect</button>
-        <button id="groupBtn">Group</button>
-        <button id="ungroupBtn">Ungroup</button>
-    </div>
-    
-    <div id="componentLibrary">
-        <h3>Component Library</h3>
-        <div class="component-item" data-type="gear">Gear</div>
-        <div class="component-item" data-type="bracket">Bracket</div>
-        <div class="component-item" data-type="screw">Screw</div>
-        <div class="component-item" data-type="wheel">Wheel</div>
-        <div class="component-item" data-type="button">Button</div>
-        <div class="component-item" data-type="switch">Switch</div>
-        <div class="component-item" data-type="motor">DC Motor</div>
-        <div class="component-item" data-type="battery">Battery</div>
+    <div class="status-bar">
+        <div class="help-text">Click and drag to move objects. Use mouse wheel to zoom.</div>
+        <div class="achievements">
+            <span class="achievement" title="First Creation">🌟</span>
+            <span class="achievement" title="Master Builder">🏆</span>
+        </div>
     </div>
 
     <!-- Application JavaScript -->

@@ -5,6 +5,38 @@
 
 // Main Three.js components
 let scene, camera, renderer;
+let orbitControls, transformControls;
+
+// Viewport management
+let viewports = {
+    perspective: {
+        camera: null,
+        controls: null,
+        element: null
+    },
+    top: {
+        camera: null,
+        controls: null,
+        element: null
+    },
+    front: {
+        camera: null,
+        controls: null,
+        element: null
+    },
+    side: {
+        camera: null,
+        controls: null,
+        element: null
+    }
+};
+
+let activeViewport = 'perspective';
+
+// Grid settings
+const gridSize = 1;
+const gridDivisions = 20;
+let gridHelper;
 
 // Objects to manage in the scene
 const objectsGroup = new THREE.Group();
@@ -55,18 +87,22 @@ function initScene() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0xf0f0f0);
     
-    // Setup camera
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 8;
-    camera.position.y = 4;
-    camera.position.x = 4;
-    camera.lookAt(scene.position);
+    // Create viewport container
+    const viewportContainer = document.getElementById('view3d');
+    viewportContainer.style.display = 'grid';
+    viewportContainer.style.gridTemplateColumns = '1fr 1fr';
+    viewportContainer.style.gridTemplateRows = '1fr 1fr';
+    viewportContainer.style.gap = '2px';
+    viewportContainer.style.backgroundColor = '#333';
     
-    // Setup renderer
-    renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.enabled = true;
-    document.getElementById('view3d').appendChild(renderer.domElement);
+    // Create viewport elements
+    createViewport('perspective', 'Perspective View', viewportContainer);
+    createViewport('top', 'Top View', viewportContainer);
+    createViewport('front', 'Front View', viewportContainer);
+    createViewport('side', 'Side View', viewportContainer);
+    
+    // Setup cameras and controls for each viewport
+    setupViewports();
     
     // Add lights
     const ambientLight = new THREE.AmbientLight(0x606060);
@@ -78,10 +114,10 @@ function initScene() {
     scene.add(directionalLight);
     
     // Add grid and ground plane
-    const gridHelper = new THREE.GridHelper(20, 20);
+    gridHelper = new THREE.GridHelper(gridSize * gridDivisions, gridDivisions);
     scene.add(gridHelper);
     
-    const planeGeometry = new THREE.PlaneGeometry(20, 20);
+    const planeGeometry = new THREE.PlaneGeometry(gridSize * gridDivisions, gridSize * gridDivisions);
     const planeMaterial = new THREE.MeshPhongMaterial({ 
         color: 0xcccccc, 
         side: THREE.DoubleSide,
@@ -108,32 +144,177 @@ function initScene() {
     
     // Setup animation loop
     animate();
+    
+    // Add event listeners
+    window.addEventListener('resize', onWindowResize);
+    renderer.domElement.addEventListener('click', onCanvasClick);
+    
+    // Update TransformControls with snapping
+    updateTransformControls();
+}
+
+// Create a viewport element
+function createViewport(name, title, container) {
+    const viewport = document.createElement('div');
+    viewport.id = `viewport-${name}`;
+    viewport.style.position = 'relative';
+    viewport.style.width = '100%';
+    viewport.style.height = '100%';
+    viewport.style.backgroundColor = '#f0f0f0';
+    
+    const titleBar = document.createElement('div');
+    titleBar.style.position = 'absolute';
+    titleBar.style.top = '0';
+    titleBar.style.left = '0';
+    titleBar.style.right = '0';
+    titleBar.style.padding = '5px';
+    titleBar.style.backgroundColor = 'rgba(0,0,0,0.5)';
+    titleBar.style.color = 'white';
+    titleBar.style.fontSize = '12px';
+    titleBar.textContent = title;
+    
+    viewport.appendChild(titleBar);
+    container.appendChild(viewport);
+    
+    viewports[name].element = viewport;
+}
+
+// Setup cameras and controls for each viewport
+function setupViewports() {
+    // Perspective view
+    viewports.perspective.camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+    viewports.perspective.camera.position.set(8, 8, 8);
+    viewports.perspective.camera.lookAt(scene.position);
+    
+    // Top view
+    viewports.top.camera = new THREE.OrthographicCamera(-10, 10, 10, -10, 0.1, 1000);
+    viewports.top.camera.position.set(0, 20, 0);
+    viewports.top.camera.lookAt(scene.position);
+    
+    // Front view
+    viewports.front.camera = new THREE.OrthographicCamera(-10, 10, 10, -10, 0.1, 1000);
+    viewports.front.camera.position.set(0, 0, 20);
+    viewports.front.camera.lookAt(scene.position);
+    
+    // Side view
+    viewports.side.camera = new THREE.OrthographicCamera(-10, 10, 10, -10, 0.1, 1000);
+    viewports.side.camera.position.set(20, 0, 0);
+    viewports.side.camera.lookAt(scene.position);
+    
+    // Create renderer
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    
+    // Setup controls for each viewport
+    Object.keys(viewports).forEach(name => {
+        const viewport = viewports[name];
+        viewport.controls = new THREE.OrbitControls(viewport.camera, viewport.element);
+        viewport.controls.enableDamping = true;
+        viewport.controls.dampingFactor = 0.05;
+        
+        // Lock rotation for orthographic views
+        if (name !== 'perspective') {
+            viewport.controls.enableRotate = false;
+        }
+    });
+    
+    // Set active viewport
+    setActiveViewport('perspective');
+}
+
+// Set active viewport
+function setActiveViewport(name) {
+    activeViewport = name;
+    const viewport = viewports[name];
+    
+    // Update transform controls
+    transformControls.camera = viewport.camera;
+    
+    // Update renderer size
+    const rect = viewport.element.getBoundingClientRect();
+    renderer.setSize(rect.width, rect.height);
+    
+    // Update camera aspect ratio
+    if (viewport.camera instanceof THREE.PerspectiveCamera) {
+        viewport.camera.aspect = rect.width / rect.height;
+        viewport.camera.updateProjectionMatrix();
+    }
 }
 
 // Animation loop
 function animate() {
     requestAnimationFrame(animate);
-    renderer.render(scene, camera);
+    
+    // Update controls for all viewports
+    Object.values(viewports).forEach(viewport => {
+        viewport.controls.update();
+    });
+    
+    // Render each viewport
+    Object.entries(viewports).forEach(([name, viewport]) => {
+        const rect = viewport.element.getBoundingClientRect();
+        renderer.setViewport(rect.left, rect.top, rect.width, rect.height);
+        renderer.setScissor(rect.left, rect.top, rect.width, rect.height);
+        renderer.setScissorTest(true);
+        renderer.render(scene, viewport.camera);
+    });
 }
 
 // Window resize handler
 function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
+    Object.values(viewports).forEach(viewport => {
+        const rect = viewport.element.getBoundingClientRect();
+        if (viewport.camera instanceof THREE.PerspectiveCamera) {
+            viewport.camera.aspect = rect.width / rect.height;
+            viewport.camera.updateProjectionMatrix();
+        }
+    });
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-// Helper function to get random color
-function getRandomColor() {
-    return Math.random() * 0xffffff;
+// Canvas click handler for object selection
+function onCanvasClick(event) {
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    
+    // Calculate mouse position in normalized device coordinates
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    
+    // Update the picking ray with the camera and mouse position
+    raycaster.setFromCamera(mouse, camera);
+    
+    // Calculate objects intersecting the picking ray
+    const intersects = raycaster.intersectObjects(objectsGroup.children, true);
+    
+    if (intersects.length > 0) {
+        const selectedMesh = intersects[0].object;
+        selectObject(selectedMesh);
+    } else {
+        clearSelection();
+    }
 }
 
-// Find object data from mesh
-function findObjectFromMesh(mesh) {
-    return objects.find(obj => obj.mesh === mesh);
+// Select an object
+function selectObject(mesh) {
+    clearSelection();
+    selectedObject = mesh;
+    selectedObjects.push(mesh);
+    
+    // Highlight selected object
+    if (mesh.material) {
+        mesh.material.emissive.setHex(0x666666);
+    }
+    
+    // Attach transform controls to selected object
+    transformControls.attach(mesh);
+    
+    // Update GUI
+    updateGUI(mesh);
 }
 
-// Utility function to clear selection
+// Clear selection
 function clearSelection() {
     if (selectedObjects.length > 0) {
         for (let obj of selectedObjects) {
@@ -145,7 +326,18 @@ function clearSelection() {
     }
     
     selectedObject = null;
+    transformControls.detach();
     resetGUI();
+}
+
+// Helper function to get random color
+function getRandomColor() {
+    return Math.random() * 0xffffff;
+}
+
+// Find object data from mesh
+function findObjectFromMesh(mesh) {
+    return objects.find(obj => obj.mesh === mesh);
 }
 
 // Reset the GUI controls
@@ -249,5 +441,45 @@ function updateGUI(object) {
     scaleFolder.open();
 }
 
-// Setup event listeners
-window.addEventListener('resize', onWindowResize);
+// Snap position to grid
+function snapToGrid(position) {
+    position.x = Math.round(position.x / gridSize) * gridSize;
+    position.y = Math.round(position.y / gridSize) * gridSize;
+    position.z = Math.round(position.z / gridSize) * gridSize;
+    return position;
+}
+
+// Snap rotation to grid
+function snapRotation(rotation) {
+    const snapAngle = Math.PI / 4; // 45 degrees
+    rotation.x = Math.round(rotation.x / snapAngle) * snapAngle;
+    rotation.y = Math.round(rotation.y / snapAngle) * snapAngle;
+    rotation.z = Math.round(rotation.z / snapAngle) * snapAngle;
+    return rotation;
+}
+
+// Snap scale to grid
+function snapScale(scale) {
+    const snapScale = 0.25;
+    scale.x = Math.round(scale.x / snapScale) * snapScale;
+    scale.y = Math.round(scale.y / snapScale) * snapScale;
+    scale.z = Math.round(scale.z / snapScale) * snapScale;
+    return scale;
+}
+
+// Update TransformControls with snapping
+function updateTransformControls() {
+    transformControls.addEventListener('objectChange', function(event) {
+        const object = event.target.object;
+        if (object) {
+            // Snap position
+            object.position.copy(snapToGrid(object.position));
+            
+            // Snap rotation
+            object.rotation.copy(snapRotation(object.rotation));
+            
+            // Snap scale
+            object.scale.copy(snapScale(object.scale));
+        }
+    });
+}
