@@ -4,11 +4,46 @@
  */
 
 // Version information
-const VERSION = '1.0.3';
+const VERSION = '1.0.4';
 
 // Initialize the application on document load
 document.addEventListener('DOMContentLoaded', function() {
     console.log('3D Editor initializing...');
+    
+    // Initialize Three.js scene
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    
+    // Set up renderer
+    const container = document.getElementById('view3d');
+    if (container) {
+        container.appendChild(renderer.domElement);
+        renderer.setSize(container.clientWidth, container.clientHeight);
+    }
+    
+    // Set up controls
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    
+    // Set up initial camera position
+    camera.position.z = 5;
+    
+    // Add ambient light
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+    
+    // Add directional light
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    directionalLight.position.set(0, 1, 0);
+    scene.add(directionalLight);
+    
+    // Handle window resize
+    window.addEventListener('resize', onWindowResize, false);
+    
+    // Start animation loop
+    animate();
     
     // Initialize 3D scene
     initScene();
@@ -30,6 +65,23 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('3D Editor initialized successfully.');
 });
+
+// Animation loop
+function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+}
+
+// Window resize handler
+function onWindowResize() {
+    const container = document.getElementById('view3d');
+    if (container) {
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
+    }
+}
 
 // Set up version history modal
 function setupVersionHistory() {

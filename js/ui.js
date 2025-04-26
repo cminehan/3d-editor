@@ -7,226 +7,206 @@
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
-// Mouse event handlers
-document.addEventListener('mousedown', handleMouseDown);
-document.addEventListener('mouseup', handleMouseUp);
-document.addEventListener('mousemove', handleMouseMove);
-document.addEventListener('wheel', handleMouseWheel);
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Initializing UI event handlers...');
 
-// Button event listeners for shape creation
-const cubeBtn = document.getElementById('cubeBtn');
-if (cubeBtn) {
-    cubeBtn.addEventListener('click', () => {
-        const cube = createCube();
-        clearSelection();
-        selectedObject = cube;
-        selectedObjects = [cube];
-        cube.material.emissive.setHex(0x555555);
-        updateGUI(cube);
-    });
-}
+    // Mouse event handlers
+    document.addEventListener('mousedown', handleMouseDown);
+    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('wheel', handleMouseWheel);
 
-const sphereBtn = document.getElementById('sphereBtn');
-if (sphereBtn) {
-    sphereBtn.addEventListener('click', () => {
-        const sphere = createSphere();
-        clearSelection();
-        selectedObject = sphere;
-        selectedObjects = [sphere];
-        sphere.material.emissive.setHex(0x555555);
-        updateGUI(sphere);
-    });
-}
-
-const cylinderBtn = document.getElementById('cylinderBtn');
-if (cylinderBtn) {
-    cylinderBtn.addEventListener('click', () => {
-        const cylinder = createCylinder();
-        clearSelection();
-        selectedObject = cylinder;
-        selectedObjects = [cylinder];
-        cylinder.material.emissive.setHex(0x555555);
-        updateGUI(cylinder);
-    });
-}
-
-const coneBtn = document.getElementById('coneBtn');
-if (coneBtn) {
-    coneBtn.addEventListener('click', () => {
-        const cone = createCone();
-        clearSelection();
-        selectedObject = cone;
-        selectedObjects = [cone];
-        cone.material.emissive.setHex(0x555555);
-        updateGUI(cone);
-    });
-}
-
-const deleteBtn = document.getElementById('deleteBtn');
-if (deleteBtn) {
-    deleteBtn.addEventListener('click', () => {
-        if (selectedObjects.length > 0) {
-            for (let obj of selectedObjects) {
-                const objData = findObjectFromMesh(obj);
-                if (objData) {
-                    objects.splice(objects.indexOf(objData), 1);
-                }
-                objectsGroup.remove(obj);
-            }
-            selectedObject = null;
-            selectedObjects = [];
-            resetGUI();
-        }
-    });
-}
-
-// Boolean operation buttons
-const unionBtn = document.getElementById('unionBtn');
-if (unionBtn) {
-    unionBtn.addEventListener('click', performUnion);
-}
-
-const subtractBtn = document.getElementById('subtractBtn');
-if (subtractBtn) {
-    subtractBtn.addEventListener('click', performSubtract);
-}
-
-const groupBtn = document.getElementById('groupBtn');
-if (groupBtn) {
-    groupBtn.addEventListener('click', groupObjects);
-}
-
-// View control buttons
-const viewButtons = document.querySelectorAll('.view-btn');
-viewButtons.forEach(button => {
-    button.addEventListener('click', function() {
-        const view = this.dataset.view;
-        setActiveViewport(view);
-        
-        // Update active state
-        viewButtons.forEach(btn => btn.classList.remove('active'));
-        this.classList.add('active');
-    });
+    // Initialize UI elements
+    initializeUIElements();
 });
 
-// Template buttons
-const templateButtons = document.querySelectorAll('.template-btn');
-templateButtons.forEach(button => {
-    button.addEventListener('click', function() {
-        const template = this.dataset.template;
-        createTemplate(template);
-    });
-});
-
-// Tab switching
-const shapesTab = document.getElementById('shapesTab');
-if (shapesTab) {
-    shapesTab.addEventListener('click', () => {
-        switchTab('shapes');
-    });
-}
-
-const textTab = document.getElementById('textTab');
-if (textTab) {
-    textTab.addEventListener('click', () => {
-        switchTab('text');
-    });
-}
-
-const componentsTab = document.getElementById('componentsTab');
-if (componentsTab) {
-    componentsTab.addEventListener('click', () => {
-        switchTab('components');
-    });
-}
-
-// Text tool handlers
-const textHeightValue = document.getElementById('textHeightValue');
-const textHeight = document.getElementById('textHeight');
-const textDepthValue = document.getElementById('textDepthValue');
-const textDepth = document.getElementById('textDepth');
-const addTextBtn = document.getElementById('addTextBtn');
-
-if (textHeightValue && textHeight) {
-    textHeightValue.textContent = textHeight.value;
-    textHeight.addEventListener('input', (event) => {
-        textHeightValue.textContent = event.target.value;
-    });
-}
-
-if (textDepthValue && textDepth) {
-    textDepthValue.textContent = textDepth.value;
-    textDepth.addEventListener('input', (event) => {
-        textDepthValue.textContent = event.target.value;
-    });
-}
-
-if (addTextBtn) {
-    addTextBtn.addEventListener('click', () => {
-        const text = document.getElementById('textInput').value;
-        if (!text) {
-            alert("Please enter text");
-            return;
-        }
-        
-        const height = parseFloat(textHeight.value);
-        const depth = parseFloat(textDepth.value);
-        
-        const textMesh = createText(text, height, depth);
-        if (textMesh) {
+function initializeUIElements() {
+    // Button event listeners for shape creation
+    const cubeBtn = document.getElementById('cubeBtn');
+    if (cubeBtn) {
+        cubeBtn.addEventListener('click', () => {
+            const cube = createCube();
             clearSelection();
-            selectedObject = textMesh;
-            selectedObjects = [textMesh];
-            textMesh.material.emissive.setHex(0x555555);
-            updateGUI(textMesh);
-        }
-    });
-}
-
-// Component library items
-const componentItems = document.querySelectorAll('.component-item');
-componentItems.forEach(item => {
-    item.addEventListener('click', () => {
-        const type = item.getAttribute('data-type');
-        const component = createComponent(type);
-        if (component) {
-            clearSelection();
-            selectedObject = component;
-            selectedObjects = [component];
-            updateGUI(component);
-        }
-    });
-});
-
-// Switch between UI tabs
-function switchTab(tabName) {
-    // Hide all panels
-    document.getElementById('toolbar').style.display = 'none';
-    document.getElementById('textTools').style.display = 'none';
-    document.getElementById('componentLibrary').style.display = 'none';
-    
-    // Update active tab
-    document.getElementById('shapesTab').classList.remove('active');
-    document.getElementById('textTab').classList.remove('active');
-    document.getElementById('componentsTab').classList.remove('active');
-    
-    // Show selected panel
-    activeTab = tabName;
-    
-    switch(tabName) {
-        case 'shapes':
-            document.getElementById('toolbar').style.display = 'block';
-            document.getElementById('shapesTab').classList.add('active');
-            break;
-        case 'text':
-            document.getElementById('textTools').style.display = 'block';
-            document.getElementById('textTab').classList.add('active');
-            break;
-        case 'components':
-            document.getElementById('componentLibrary').style.display = 'block';
-            document.getElementById('componentsTab').classList.add('active');
-            break;
+            selectedObject = cube;
+            selectedObjects = [cube];
+            cube.material.emissive.setHex(0x555555);
+            updateGUI(cube);
+        });
     }
+
+    const sphereBtn = document.getElementById('sphereBtn');
+    if (sphereBtn) {
+        sphereBtn.addEventListener('click', () => {
+            const sphere = createSphere();
+            clearSelection();
+            selectedObject = sphere;
+            selectedObjects = [sphere];
+            sphere.material.emissive.setHex(0x555555);
+            updateGUI(sphere);
+        });
+    }
+
+    const cylinderBtn = document.getElementById('cylinderBtn');
+    if (cylinderBtn) {
+        cylinderBtn.addEventListener('click', () => {
+            const cylinder = createCylinder();
+            clearSelection();
+            selectedObject = cylinder;
+            selectedObjects = [cylinder];
+            cylinder.material.emissive.setHex(0x555555);
+            updateGUI(cylinder);
+        });
+    }
+
+    const coneBtn = document.getElementById('coneBtn');
+    if (coneBtn) {
+        coneBtn.addEventListener('click', () => {
+            const cone = createCone();
+            clearSelection();
+            selectedObject = cone;
+            selectedObjects = [cone];
+            cone.material.emissive.setHex(0x555555);
+            updateGUI(cone);
+        });
+    }
+
+    const deleteBtn = document.getElementById('deleteBtn');
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', () => {
+            if (selectedObjects.length > 0) {
+                for (let obj of selectedObjects) {
+                    const objData = findObjectFromMesh(obj);
+                    if (objData) {
+                        objects.splice(objects.indexOf(objData), 1);
+                    }
+                    objectsGroup.remove(obj);
+                }
+                selectedObject = null;
+                selectedObjects = [];
+                resetGUI();
+            }
+        });
+    }
+
+    // Boolean operation buttons
+    const unionBtn = document.getElementById('unionBtn');
+    if (unionBtn) {
+        unionBtn.addEventListener('click', performUnion);
+    }
+
+    const subtractBtn = document.getElementById('subtractBtn');
+    if (subtractBtn) {
+        subtractBtn.addEventListener('click', performSubtract);
+    }
+
+    const groupBtn = document.getElementById('groupBtn');
+    if (groupBtn) {
+        groupBtn.addEventListener('click', groupObjects);
+    }
+
+    // View control buttons
+    const viewButtons = document.querySelectorAll('.view-btn');
+    viewButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const view = this.dataset.view;
+            setActiveViewport(view);
+            
+            // Update active state
+            viewButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // Template buttons
+    const templateButtons = document.querySelectorAll('.template-btn');
+    templateButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const template = this.dataset.template;
+            createTemplate(template);
+        });
+    });
+
+    // Tab switching
+    const shapesTab = document.getElementById('shapesTab');
+    if (shapesTab) {
+        shapesTab.addEventListener('click', () => {
+            switchTab('shapes');
+        });
+    }
+
+    const textTab = document.getElementById('textTab');
+    if (textTab) {
+        textTab.addEventListener('click', () => {
+            switchTab('text');
+        });
+    }
+
+    const componentsTab = document.getElementById('componentsTab');
+    if (componentsTab) {
+        componentsTab.addEventListener('click', () => {
+            switchTab('components');
+        });
+    }
+
+    // Text tool handlers
+    const textHeightValue = document.getElementById('textHeightValue');
+    const textHeight = document.getElementById('textHeight');
+    const textDepthValue = document.getElementById('textDepthValue');
+    const textDepth = document.getElementById('textDepth');
+    const addTextBtn = document.getElementById('addTextBtn');
+
+    if (textHeightValue && textHeight) {
+        textHeightValue.textContent = textHeight.value;
+        textHeight.addEventListener('input', (event) => {
+            textHeightValue.textContent = event.target.value;
+        });
+    }
+
+    if (textDepthValue && textDepth) {
+        textDepthValue.textContent = textDepth.value;
+        textDepth.addEventListener('input', (event) => {
+            textDepthValue.textContent = event.target.value;
+        });
+    }
+
+    if (addTextBtn) {
+        addTextBtn.addEventListener('click', () => {
+            const textInput = document.getElementById('textInput');
+            if (!textInput || !textInput.value) {
+                alert("Please enter text");
+                return;
+            }
+            
+            const height = parseFloat(textHeight.value);
+            const depth = parseFloat(textDepth.value);
+            
+            const textMesh = createText(textInput.value, height, depth);
+            if (textMesh) {
+                clearSelection();
+                selectedObject = textMesh;
+                selectedObjects = [textMesh];
+                textMesh.material.emissive.setHex(0x555555);
+                updateGUI(textMesh);
+            }
+        });
+    }
+
+    // Component library items
+    const componentItems = document.querySelectorAll('.component-item');
+    componentItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const type = item.getAttribute('data-type');
+            const component = createComponent(type);
+            if (component) {
+                clearSelection();
+                selectedObject = component;
+                selectedObjects = [component];
+                updateGUI(component);
+            }
+        });
+    });
+
+    console.log('UI event handlers initialized successfully');
 }
 
 // Handle mouse down event
@@ -364,4 +344,35 @@ function handleMouseWheel(event) {
     }
     
     camera.lookAt(scene.position);
+}
+
+// Switch between UI tabs
+function switchTab(tabName) {
+    // Hide all panels
+    document.getElementById('toolbar').style.display = 'none';
+    document.getElementById('textTools').style.display = 'none';
+    document.getElementById('componentLibrary').style.display = 'none';
+    
+    // Update active tab
+    document.getElementById('shapesTab').classList.remove('active');
+    document.getElementById('textTab').classList.remove('active');
+    document.getElementById('componentsTab').classList.remove('active');
+    
+    // Show selected panel
+    activeTab = tabName;
+    
+    switch(tabName) {
+        case 'shapes':
+            document.getElementById('toolbar').style.display = 'block';
+            document.getElementById('shapesTab').classList.add('active');
+            break;
+        case 'text':
+            document.getElementById('textTools').style.display = 'block';
+            document.getElementById('textTab').classList.add('active');
+            break;
+        case 'components':
+            document.getElementById('componentLibrary').style.display = 'block';
+            document.getElementById('componentsTab').classList.add('active');
+            break;
+    }
 }

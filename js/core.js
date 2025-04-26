@@ -81,181 +81,167 @@ let guiParams = {
 // Font for text creation
 let defaultFont;
 
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM fully loaded, initializing 3D environment');
+    
+    try {
+        // Initialize the scene
+        initScene();
+        
+        // Add event listeners
+        window.addEventListener('resize', onWindowResize);
+        
+        const canvas = renderer?.domElement;
+        if (canvas) {
+            canvas.addEventListener('click', onCanvasClick);
+            console.log('Event listeners initialized');
+        } else {
+            console.error('Canvas not found during initialization');
+        }
+        
+        // Start animation loop
+        animate();
+        
+        console.log('3D environment initialization complete');
+    } catch (error) {
+        console.error('Error during initialization:', error);
+    }
+});
+
 // Initialize the 3D environment
 function initScene() {
-    console.log('Initializing 3D scene...');
+    console.log('Initializing scene...');
     
-    // Create scene
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xffffff);
-    
-    // Create viewport container
-    const viewportContainer = document.getElementById('view3d');
-    if (!viewportContainer) {
-        console.error('Viewport container not found!');
-        return;
+    try {
+        // Initialize viewport container
+        viewportContainer = document.getElementById('view3d');
+        if (!viewportContainer) {
+            throw new Error('Viewport container not found');
+        }
+        
+        // Initialize scene
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xf0f0f0);
+        console.log('Scene created');
+        
+        // Initialize camera
+        const aspect = viewportContainer.clientWidth / viewportContainer.clientHeight;
+        camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
+        camera.position.set(0, 5, 10);
+        console.log('Camera initialized');
+        
+        // Initialize renderer with proper pixel ratio
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(viewportContainer.clientWidth, viewportContainer.clientHeight);
+        viewportContainer.appendChild(renderer.domElement);
+        console.log('Renderer initialized');
+        
+        // Initialize orbit controls
+        orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
+        orbitControls.enableDamping = true;
+        orbitControls.dampingFactor = 0.05;
+        console.log('Orbit controls initialized');
+        
+        // Initialize raycaster
+        raycaster = new THREE.Raycaster();
+        mouse = new THREE.Vector2();
+        console.log('Raycaster initialized');
+        
+        // Initialize GUI
+        gui = new dat.GUI();
+        console.log('GUI initialized');
+        
+        // Add test cube
+        const testCube = createTestCube();
+        scene.add(testCube);
+        console.log('Test cube added to scene');
+        
+        console.log('Scene initialization complete');
+    } catch (error) {
+        console.error('Error during scene initialization:', error);
+        throw error; // Re-throw to be caught by the DOMContentLoaded handler
     }
-    
-    // Force viewport container to have proper dimensions
-    viewportContainer.style.width = '100%';
-    viewportContainer.style.height = '100%';
-    viewportContainer.style.position = 'relative';
-    viewportContainer.style.backgroundColor = '#ffffff';
-    
-    console.log('Viewport container dimensions:', {
-        width: viewportContainer.clientWidth,
-        height: viewportContainer.clientHeight
-    });
-    
-    // Create renderer
-    renderer = new THREE.WebGLRenderer({ 
-        antialias: true,
-        alpha: true
-    });
-    renderer.setSize(viewportContainer.clientWidth, viewportContainer.clientHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    viewportContainer.appendChild(renderer.domElement);
-    
-    // Ensure canvas takes full container size
-    renderer.domElement.style.width = '100%';
-    renderer.domElement.style.height = '100%';
-    renderer.domElement.style.position = 'absolute';
-    renderer.domElement.style.top = '0';
-    renderer.domElement.style.left = '0';
-    
-    console.log('Renderer initialized with size:', {
-        width: renderer.domElement.width,
-        height: renderer.domElement.height
-    });
-    
-    // Setup camera
-    const aspect = viewportContainer.clientWidth / viewportContainer.clientHeight;
-    camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
-    camera.position.set(5, 5, 5);
-    camera.lookAt(0, 0, 0);
-    
-    console.log('Camera initialized at position:', camera.position);
-    
-    // Setup orbit controls
-    orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
-    orbitControls.enableDamping = true;
-    orbitControls.dampingFactor = 0.05;
-    orbitControls.screenSpacePanning = false;
-    orbitControls.minDistance = 1;
-    orbitControls.maxDistance = 50;
-    orbitControls.maxPolarAngle = Math.PI / 2;
-    
-    // Setup transform controls
-    transformControls = new THREE.TransformControls(camera, renderer.domElement);
-    transformControls.addEventListener('dragging-changed', function(event) {
-        orbitControls.enabled = !event.value;
-    });
-    scene.add(transformControls);
-    
-    // Add lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    scene.add(ambientLight);
-    
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    directionalLight.position.set(5, 5, 5);
-    directionalLight.castShadow = true;
-    scene.add(directionalLight);
-    
-    // Add grid and ground plane
-    gridHelper = new THREE.GridHelper(10, 10);
-    scene.add(gridHelper);
-    
-    const planeGeometry = new THREE.PlaneGeometry(20, 20);
-    const planeMaterial = new THREE.MeshPhongMaterial({ 
-        color: 0xcccccc, 
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 0.5
-    });
-    const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-    plane.rotation.x = Math.PI / 2;
-    plane.position.y = -0.01;
-    plane.receiveShadow = true;
-    scene.add(plane);
-    
-    // Add objects group
-    scene.add(objectsGroup);
-    
-    // Load default font
-    const fontLoader = new THREE.FontLoader();
-    fontLoader.load('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/fonts/helvetiker_regular.typeface.json', function (font) {
-        defaultFont = font;
-    });
-    
-    // Init GUI
-    gui = new dat.GUI();
-    
-    // Setup animation loop
-    animate();
-    
-    // Add event listeners
-    window.addEventListener('resize', onWindowResize);
-    renderer.domElement.addEventListener('click', onCanvasClick);
-    
-    // Add a test cube to verify rendering
-    const testCube = createCube();
-    if (testCube) {
-        console.log('Test cube created successfully at position:', testCube.position);
-        selectObject(testCube);
-    }
-    
-    console.log('Scene initialization complete');
 }
 
 // Animation loop
 function animate() {
-    requestAnimationFrame(animate);
-    
-    // Update controls
-    orbitControls.update();
-    
-    // Render scene
-    renderer.render(scene, camera);
+    try {
+        // Check if all required components are initialized
+        if (!scene || !camera || !renderer || !orbitControls) {
+            console.error('Required components not initialized');
+            return;
+        }
+
+        // Request next frame first in case of errors
+        requestAnimationFrame(animate);
+
+        // Update controls
+        orbitControls.update();
+
+        // Render scene
+        renderer.render(scene, camera);
+
+    } catch (error) {
+        console.error('Error in animation loop:', error);
+        // Stop animation loop on error
+        cancelAnimationFrame(animate);
+    }
 }
 
-// Window resize handler
+// Handle window resize
 function onWindowResize() {
-    const viewportContainer = document.getElementById('view3d');
-    if (!viewportContainer) return;
-    
-    const width = viewportContainer.clientWidth;
-    const height = viewportContainer.clientHeight;
-    
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
-    
-    renderer.setSize(width, height);
-    
-    console.log('Window resized:', { width, height });
+    try {
+        if (!camera || !renderer || !viewportContainer) {
+            console.error('Required components not initialized for resize');
+            return;
+        }
+
+        // Update camera
+        camera.aspect = viewportContainer.clientWidth / viewportContainer.clientHeight;
+        camera.updateProjectionMatrix();
+
+        // Update renderer
+        renderer.setSize(viewportContainer.clientWidth, viewportContainer.clientHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+
+        console.log('Window resize handled successfully');
+    } catch (error) {
+        console.error('Error handling window resize:', error);
+    }
 }
 
-// Canvas click handler for object selection
+// Handle canvas click for object selection
 function onCanvasClick(event) {
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-    
-    // Calculate mouse position in normalized device coordinates
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    
-    // Update the picking ray with the camera and mouse position
-    raycaster.setFromCamera(mouse, camera);
-    
-    // Calculate objects intersecting the picking ray
-    const intersects = raycaster.intersectObjects(objectsGroup.children, true);
-    
-    if (intersects.length > 0) {
-        const selectedMesh = intersects[0].object;
-        selectObject(selectedMesh);
-    } else {
-        clearSelection();
+    if (!camera || !scene || !renderer) {
+        console.warn('Required elements not initialized for click handler');
+        return;
+    }
+
+    try {
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        
+        // Calculate mouse position in normalized device coordinates
+        const rect = renderer.domElement.getBoundingClientRect();
+        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+        
+        raycaster.setFromCamera(mouse, camera);
+        
+        // Get list of intersected objects
+        const intersects = raycaster.intersectObjects(objectsGroup.children, true);
+        
+        if (intersects.length > 0) {
+            const object = intersects[0].object;
+            console.log('Object clicked:', object);
+            selectObject(object);
+        } else {
+            console.log('No object clicked, deselecting');
+            deselectAll();
+        }
+    } catch (error) {
+        console.error('Error during canvas click handling:', error);
     }
 }
 
@@ -500,3 +486,26 @@ function createHouse() {
     scene.add(group);
     return group;
 }
+
+// Cleanup function to remove event listeners
+function cleanup() {
+    console.log('Cleaning up event listeners');
+    
+    window.removeEventListener('resize', onWindowResize);
+    
+    const canvas = renderer?.domElement;
+    if (canvas) {
+        canvas.removeEventListener('click', onCanvasClick);
+    }
+    
+    // Dispose of Three.js resources
+    if (renderer) {
+        renderer.dispose();
+    }
+    if (orbitControls) {
+        orbitControls.dispose();
+    }
+}
+
+// Add cleanup on page unload
+window.addEventListener('unload', cleanup);
