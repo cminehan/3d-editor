@@ -489,3 +489,77 @@ body {
     from { transform: translateX(-20px); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
 }
+
+/* Transform Controls */
+.tool-btn.active {
+    background-color: #2196F3;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.tool-btn:hover {
+    background-color: #e0e0e0;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.tool-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Transform Controls Visual Feedback */
+.tool-btn[data-mode="move"]:hover {
+    cursor: move;
+}
+
+.tool-btn[data-mode="rotate"]:hover {
+    cursor: grab;
+}
+
+.tool-btn[data-mode="scale"]:hover {
+    cursor: nwse-resize;
+}
+
+/* Transform Controls Tooltips */
+.tool-btn {
+    position: relative;
+}
+
+.tool-btn::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 8px;
+    background-color: rgba(0,0,0,0.8);
+    color: white;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+}
+
+.tool-btn:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Transform Controls Mode Indicators */
+.tool-btn[data-mode="move"]::before {
+    content: "↔";
+    margin-right: 4px;
+}
+
+.tool-btn[data-mode="rotate"]::before {
+    content: "⟳";
+    margin-right: 4px;
+}
+
+.tool-btn[data-mode="scale"]::before {
+    content: "⤧";
+    margin-right: 4px;
+}

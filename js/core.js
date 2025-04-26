@@ -165,15 +165,24 @@ function initScene() {
         transformControls.addEventListener('dragging-changed', function(event) {
             orbitControls.enabled = !event.value;
         });
-        transformControls.addEventListener('objectChange', function(event) {
-            const object = event.target.object;
-            if (object) {
-                // Update GUI if this is the selected object
-                if (object === selectedObject) {
-                    updateGUI(object);
-                }
-            }
+        
+        // Set up transform control modes
+        transformControls.setMode('translate'); // Default to move mode
+        transformControls.setSpace('world'); // Use world space for more intuitive movement
+        transformControls.setSize(0.75); // Make controls slightly smaller
+        transformControls.showX = true;
+        transformControls.showY = true;
+        transformControls.showZ = true;
+        
+        // Add visual feedback for transform controls
+        transformControls.addEventListener('mouseDown', function() {
+            document.body.style.cursor = 'move';
         });
+        
+        transformControls.addEventListener('mouseUp', function() {
+            document.body.style.cursor = 'auto';
+        });
+        
         transformControls.visible = false;
         scene.add(transformControls);
         console.log('Transform controls initialized');
@@ -294,6 +303,49 @@ function onCanvasClick(event) {
     }
 }
 
+// Set up transform control buttons
+function setupTransformControls() {
+    const moveBtn = document.getElementById('moveBtn');
+    const rotateBtn = document.getElementById('rotateBtn');
+    const scaleBtn = document.getElementById('scaleBtn');
+    
+    if (moveBtn) {
+        moveBtn.addEventListener('click', function() {
+            if (transformControls && selectedObject) {
+                transformControls.setMode('translate');
+                this.classList.add('active');
+                rotateBtn.classList.remove('active');
+                scaleBtn.classList.remove('active');
+                document.body.style.cursor = 'move';
+            }
+        });
+    }
+    
+    if (rotateBtn) {
+        rotateBtn.addEventListener('click', function() {
+            if (transformControls && selectedObject) {
+                transformControls.setMode('rotate');
+                this.classList.add('active');
+                moveBtn.classList.remove('active');
+                scaleBtn.classList.remove('active');
+                document.body.style.cursor = 'grab';
+            }
+        });
+    }
+    
+    if (scaleBtn) {
+        scaleBtn.addEventListener('click', function() {
+            if (transformControls && selectedObject) {
+                transformControls.setMode('scale');
+                this.classList.add('active');
+                moveBtn.classList.remove('active');
+                rotateBtn.classList.remove('active');
+                document.body.style.cursor = 'nwse-resize';
+            }
+        });
+    }
+}
+
 // Select an object
 function selectObject(mesh) {
     console.log('Selecting object:', mesh.name);
@@ -310,6 +362,12 @@ function selectObject(mesh) {
     if (transformControls) {
         transformControls.attach(mesh);
         transformControls.visible = true;
+        
+        // Set default transform mode
+        transformControls.setMode('translate');
+        document.getElementById('moveBtn').classList.add('active');
+        document.getElementById('rotateBtn').classList.remove('active');
+        document.getElementById('scaleBtn').classList.remove('active');
     }
     
     // Update GUI
@@ -332,6 +390,7 @@ function clearSelection() {
     if (transformControls) {
         transformControls.detach();
         transformControls.visible = false;
+        document.body.style.cursor = 'auto';
     }
     resetGUI();
 }
