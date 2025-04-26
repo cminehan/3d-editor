@@ -85,16 +85,20 @@ let defaultFont;
 function initScene() {
     // Create scene
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf0f0f0);
+    scene.background = new THREE.Color(0xffffff);
     
     // Create viewport container
     const viewportContainer = document.getElementById('view3d');
     viewportContainer.style.position = 'relative';
     viewportContainer.style.width = '100%';
     viewportContainer.style.height = '100%';
+    viewportContainer.style.backgroundColor = '#ffffff';
     
     // Create renderer
-    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer = new THREE.WebGLRenderer({ 
+        antialias: true,
+        alpha: true
+    });
     renderer.setSize(viewportContainer.clientWidth, viewportContainer.clientHeight);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -122,10 +126,10 @@ function initScene() {
     scene.add(transformControls);
     
     // Add lights
-    const ambientLight = new THREE.AmbientLight(0x404040, 1.5);
+    const ambientLight = new THREE.AmbientLight(0x404040, 2.0);
     scene.add(ambientLight);
     
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
     directionalLight.position.set(5, 5, 5);
     directionalLight.castShadow = true;
     directionalLight.shadow.mapSize.width = 1024;
@@ -258,7 +262,17 @@ function clearSelection() {
 
 // Helper function to get random color
 function getRandomColor() {
-    return Math.random() * 0xffffff;
+    const colors = [
+        0x2196F3, // Blue
+        0x4CAF50, // Green
+        0xFFC107, // Amber
+        0xF44336, // Red
+        0x9C27B0, // Purple
+        0x00BCD4, // Cyan
+        0xFF9800, // Orange
+        0x795548  // Brown
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
 }
 
 // Find object data from mesh
