@@ -6,15 +6,15 @@
 // Create a cube
 function createCube() {
     console.log('Creating cube...');
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const geometry = new THREE.BoxGeometry(2, 2, 2);
     const material = new THREE.MeshPhongMaterial({ 
-        color: getRandomColor(),
+        color: 0x2196F3,
         shininess: 30,
         transparent: true,
         opacity: 1.0
     });
     const cube = new THREE.Mesh(geometry, material);
-    cube.position.set(0, 0.5, 0);
+    cube.position.set(0, 1, 0);
     cube.castShadow = true;
     cube.receiveShadow = true;
     cube.name = 'cube_' + Date.now();
@@ -31,15 +31,15 @@ function createCube() {
 // Create a sphere
 function createSphere() {
     console.log('Creating sphere...');
-    const geometry = new THREE.SphereGeometry(0.5, 32, 32);
+    const geometry = new THREE.SphereGeometry(1, 32, 32);
     const material = new THREE.MeshPhongMaterial({ 
-        color: getRandomColor(),
+        color: 0x4CAF50,
         shininess: 30,
         transparent: true,
         opacity: 1.0
     });
     const sphere = new THREE.Mesh(geometry, material);
-    sphere.position.set(0, 0.5, 0);
+    sphere.position.set(0, 1, 0);
     sphere.castShadow = true;
     sphere.receiveShadow = true;
     sphere.name = 'sphere_' + Date.now();
@@ -56,15 +56,15 @@ function createSphere() {
 // Create a cylinder
 function createCylinder() {
     console.log('Creating cylinder...');
-    const geometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 32);
+    const geometry = new THREE.CylinderGeometry(1, 1, 2, 32);
     const material = new THREE.MeshPhongMaterial({ 
-        color: getRandomColor(),
+        color: 0xFFC107,
         shininess: 30,
         transparent: true,
         opacity: 1.0
     });
     const cylinder = new THREE.Mesh(geometry, material);
-    cylinder.position.set(0, 0.5, 0);
+    cylinder.position.set(0, 1, 0);
     cylinder.castShadow = true;
     cylinder.receiveShadow = true;
     cylinder.name = 'cylinder_' + Date.now();
@@ -81,15 +81,15 @@ function createCylinder() {
 // Create a cone
 function createCone() {
     console.log('Creating cone...');
-    const geometry = new THREE.ConeGeometry(0.5, 1, 32);
+    const geometry = new THREE.ConeGeometry(1, 2, 32);
     const material = new THREE.MeshPhongMaterial({ 
-        color: getRandomColor(),
+        color: 0xF44336,
         shininess: 30,
         transparent: true,
         opacity: 1.0
     });
     const cone = new THREE.Mesh(geometry, material);
-    cone.position.set(0, 0.5, 0);
+    cone.position.set(0, 1, 0);
     cone.castShadow = true;
     cone.receiveShadow = true;
     cone.name = 'cone_' + Date.now();

@@ -165,6 +165,15 @@ function initScene() {
         transformControls.addEventListener('dragging-changed', function(event) {
             orbitControls.enabled = !event.value;
         });
+        transformControls.addEventListener('objectChange', function(event) {
+            const object = event.target.object;
+            if (object) {
+                // Update GUI if this is the selected object
+                if (object === selectedObject) {
+                    updateGUI(object);
+                }
+            }
+        });
         transformControls.visible = false;
         scene.add(transformControls);
         console.log('Transform controls initialized');
@@ -357,6 +366,8 @@ function resetGUI() {
 function updateGUI(object) {
     resetGUI();
     
+    if (!object) return;
+    
     // For groups without materials, just show transform props
     if (!object.material) {
         // Transform properties
@@ -387,6 +398,13 @@ function updateGUI(object) {
             object.rotation.z = THREE.MathUtils.degToRad(value);
         });
         rotationFolder.open();
+        
+        // Scale properties
+        const scaleFolder = gui.addFolder('Scale');
+        scaleFolder.add(object.scale, 'x', 0.1, 5).name('X Scale');
+        scaleFolder.add(object.scale, 'y', 0.1, 5).name('Y Scale');
+        scaleFolder.add(object.scale, 'z', 0.1, 5).name('Z Scale');
+        scaleFolder.open();
         
         return;
     }
