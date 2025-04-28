@@ -134,6 +134,23 @@ function initScene() {
         scene.background = new THREE.Color(0xf0f0f0);
         console.log('Scene created');
         
+        // Add lighting
+        const ambientLight = new THREE.AmbientLight(0x404040, 1);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(5, 5, 5);
+        directionalLight.castShadow = true;
+        scene.add(directionalLight);
+        
+        // Add grid helper
+        gridHelper = new THREE.GridHelper(gridSize * gridDivisions, gridDivisions, 0x000000, 0x000000);
+        gridHelper.position.y = 0;
+        scene.add(gridHelper);
+        
+        // Add objectsGroup to scene
+        scene.add(objectsGroup);
+        
         // Initialize camera
         const aspect = viewportContainer.clientWidth / viewportContainer.clientHeight;
         camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
@@ -198,25 +215,6 @@ function initScene() {
         // Initialize GUI
         gui = new dat.GUI();
         console.log('GUI initialized');
-        
-        // Add grid helper
-        gridHelper = new THREE.GridHelper(10, 10);
-        scene.add(gridHelper);
-        console.log('Grid helper added to scene');
-        
-        // Add ambient light
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-        scene.add(ambientLight);
-        
-        // Add directional light
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        directionalLight.position.set(5, 5, 5);
-        directionalLight.castShadow = true;
-        directionalLight.shadow.mapSize.width = 1024;
-        directionalLight.shadow.mapSize.height = 1024;
-        directionalLight.shadow.camera.near = 0.5;
-        directionalLight.shadow.camera.far = 50;
-        scene.add(directionalLight);
         
         // Add test cube
         const testCube = createCube();

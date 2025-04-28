@@ -6,7 +6,7 @@
 // Create a cube
 function createCube() {
     console.log('Creating cube...');
-    const geometry = new THREE.BoxGeometry(2, 2, 2);
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
     const material = new THREE.MeshPhongMaterial({ 
         color: 0x2196F3, // Bright blue
         shininess: 30,
@@ -14,14 +14,13 @@ function createCube() {
         opacity: 1.0
     });
     const cube = new THREE.Mesh(geometry, material);
-    cube.position.set(0, 1, 0);
+    cube.position.set(0, 0.5, 0); // Position at half height
     cube.castShadow = true;
     cube.receiveShadow = true;
     cube.name = 'cube_' + Date.now();
     cube.userData = { type: 'cube' };
     
     // Add to scene and objectsGroup
-    scene.add(cube);
     objectsGroup.add(cube);
     
     const obj = new DesignObject(cube, 'cube');
@@ -34,7 +33,7 @@ function createCube() {
 // Create a sphere
 function createSphere() {
     console.log('Creating sphere...');
-    const geometry = new THREE.SphereGeometry(1, 32, 32);
+    const geometry = new THREE.SphereGeometry(0.5, 32, 32);
     const material = new THREE.MeshPhongMaterial({ 
         color: 0x4CAF50, // Bright green
         shininess: 30,
@@ -42,14 +41,13 @@ function createSphere() {
         opacity: 1.0
     });
     const sphere = new THREE.Mesh(geometry, material);
-    sphere.position.set(0, 1, 0);
+    sphere.position.set(0, 0.5, 0); // Position at half height
     sphere.castShadow = true;
     sphere.receiveShadow = true;
     sphere.name = 'sphere_' + Date.now();
     sphere.userData = { type: 'sphere' };
     
     // Add to scene and objectsGroup
-    scene.add(sphere);
     objectsGroup.add(sphere);
     
     const obj = new DesignObject(sphere, 'sphere');
@@ -62,7 +60,7 @@ function createSphere() {
 // Create a cylinder
 function createCylinder() {
     console.log('Creating cylinder...');
-    const geometry = new THREE.CylinderGeometry(1, 1, 2, 32);
+    const geometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 32);
     const material = new THREE.MeshPhongMaterial({ 
         color: 0xFFC107, // Bright amber
         shininess: 30,
@@ -70,14 +68,13 @@ function createCylinder() {
         opacity: 1.0
     });
     const cylinder = new THREE.Mesh(geometry, material);
-    cylinder.position.set(0, 1, 0);
+    cylinder.position.set(0, 0.5, 0); // Position at half height
     cylinder.castShadow = true;
     cylinder.receiveShadow = true;
     cylinder.name = 'cylinder_' + Date.now();
     cylinder.userData = { type: 'cylinder' };
     
     // Add to scene and objectsGroup
-    scene.add(cylinder);
     objectsGroup.add(cylinder);
     
     const obj = new DesignObject(cylinder, 'cylinder');
@@ -90,7 +87,7 @@ function createCylinder() {
 // Create a pyramid
 function createPyramid() {
     console.log('Creating pyramid...');
-    const geometry = new THREE.ConeGeometry(1, 2, 4); // 4 sides for pyramid
+    const geometry = new THREE.ConeGeometry(0.5, 1, 4); // 4 sides for pyramid
     const material = new THREE.MeshPhongMaterial({ 
         color: 0x9C27B0, // Purple
         shininess: 30,
@@ -98,14 +95,13 @@ function createPyramid() {
         opacity: 1.0
     });
     const pyramid = new THREE.Mesh(geometry, material);
-    pyramid.position.set(0, 1, 0);
+    pyramid.position.set(0, 0.5, 0); // Position at half height
     pyramid.castShadow = true;
     pyramid.receiveShadow = true;
     pyramid.name = 'pyramid_' + Date.now();
     pyramid.userData = { type: 'pyramid' };
     
     // Add to scene and objectsGroup
-    scene.add(pyramid);
     objectsGroup.add(pyramid);
     
     const obj = new DesignObject(pyramid, 'pyramid');
@@ -115,10 +111,10 @@ function createPyramid() {
     return pyramid;
 }
 
-// Create a cone (replacing existing cone with a different style)
+// Create a cone
 function createCone() {
     console.log('Creating cone...');
-    const geometry = new THREE.ConeGeometry(1, 2, 32);
+    const geometry = new THREE.ConeGeometry(0.5, 1, 32);
     const material = new THREE.MeshPhongMaterial({ 
         color: 0x00BCD4, // Cyan
         shininess: 30,
@@ -126,14 +122,13 @@ function createCone() {
         opacity: 1.0
     });
     const cone = new THREE.Mesh(geometry, material);
-    cone.position.set(0, 1, 0);
+    cone.position.set(0, 0.5, 0); // Position at half height
     cone.castShadow = true;
     cone.receiveShadow = true;
     cone.name = 'cone_' + Date.now();
     cone.userData = { type: 'cone' };
     
     // Add to scene and objectsGroup
-    scene.add(cone);
     objectsGroup.add(cone);
     
     const obj = new DesignObject(cone, 'cone');
