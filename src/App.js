@@ -2,6 +2,7 @@ import React from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { Box } from './components/Box';
+import VersionDisplay from './components/VersionDisplay';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Box position={[1.2, 0, 0]} />
         <OrbitControls />
       </Canvas>
+      <VersionDisplay />
     </div>
   );
 }
