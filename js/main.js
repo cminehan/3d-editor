@@ -4,7 +4,7 @@
  */
 
 // Version information
-const VERSION = '1.0.11';
+const VERSION = '1.0.12';
 
 // Initialize the application on document load
 document.addEventListener('DOMContentLoaded', function() {
@@ -128,7 +128,30 @@ function setupViewControls() {
     viewButtons.forEach(button => {
         button.addEventListener('click', function() {
             const view = this.dataset.view;
-            setActiveViewport(view);
+            
+            // Update camera position based on view
+            switch(view) {
+                case 'perspective':
+                    camera.position.set(5, 5, 5);
+                    camera.lookAt(0, 0, 0);
+                    break;
+                case 'top':
+                    camera.position.set(0, 10, 0);
+                    camera.lookAt(0, 0, 0);
+                    break;
+                case 'front':
+                    camera.position.set(0, 0, 10);
+                    camera.lookAt(0, 0, 0);
+                    break;
+                case 'side':
+                    camera.position.set(10, 0, 0);
+                    camera.lookAt(0, 0, 0);
+                    break;
+            }
+            
+            // Update orbit controls target
+            orbitControls.target.set(0, 0, 0);
+            orbitControls.update();
             
             // Update active state
             viewButtons.forEach(btn => btn.classList.remove('active'));
@@ -145,19 +168,46 @@ function setupTransformControls() {
         scene.add(transformControls);
     }
     
-    document.getElementById('moveBtn').addEventListener('click', function() {
-        transformControls.setMode('translate');
-        this.classList.add('active');
+    const moveBtn = document.getElementById('moveBtn');
+    const rotateBtn = document.getElementById('rotateBtn');
+    const scaleBtn = document.getElementById('scaleBtn');
+    
+    moveBtn.addEventListener('click', function() {
+        if (selectedObject) {
+            transformControls.setMode('translate');
+            moveBtn.classList.add('active');
+            rotateBtn.classList.remove('active');
+            scaleBtn.classList.remove('active');
+        }
     });
     
-    document.getElementById('rotateBtn').addEventListener('click', function() {
-        transformControls.setMode('rotate');
-        this.classList.add('active');
+    rotateBtn.addEventListener('click', function() {
+        if (selectedObject) {
+            transformControls.setMode('rotate');
+            rotateBtn.classList.add('active');
+            moveBtn.classList.remove('active');
+            scaleBtn.classList.remove('active');
+        }
     });
     
-    document.getElementById('scaleBtn').addEventListener('click', function() {
-        transformControls.setMode('scale');
-        this.classList.add('active');
+    scaleBtn.addEventListener('click', function() {
+        if (selectedObject) {
+            transformControls.setMode('scale');
+            scaleBtn.classList.add('active');
+            moveBtn.classList.remove('active');
+            rotateBtn.classList.remove('active');
+        }
+    });
+    
+    // Add transform controls event listeners
+    transformControls.addEventListener('dragging-changed', function(event) {
+        orbitControls.enabled = !event.value;
+    });
+    
+    transformControls.addEventListener('change', function() {
+        if (selectedObject) {
+            updatePropertyInputs();
+        }
     });
 }
 
@@ -167,7 +217,17 @@ function setupTemplateButtons() {
     templateButtons.forEach(button => {
         button.addEventListener('click', function() {
             const template = this.dataset.template;
-            createTemplate(template);
+            try {
+                const templateObject = createTemplate(template);
+                if (templateObject) {
+                    selectObject(templateObject);
+                    showCreationEffect(templateObject);
+                } else {
+                    console.error('Failed to create template:', template);
+                }
+            } catch (error) {
+                console.error('Error creating template:', error);
+            }
         });
     });
 }
@@ -210,34 +270,27 @@ function showCreationEffect(object) {
 
 // Delete selected object
 function deleteSelectedObject() {
-    if (selectedObject) {
-        // Fade out animation
-        const fadeOut = function() {
-            if (selectedObject && selectedObject.material) {
-                if (selectedObject.material.opacity > 0.1) {
-                    selectedObject.material.opacity -= 0.1;
-                    selectedObject.material.transparent = true;
-                    requestAnimationFrame(fadeOut);
-                } else {
-                    objectsGroup.remove(selectedObject);
-                    const index = objects.findIndex(obj => obj.mesh === selectedObject);
-                    if (index > -1) {
-                        objects.splice(index, 1);
-                    }
-                    clearSelection();
-                }
-            } else {
-                // If no material, just remove immediately
-                objectsGroup.remove(selectedObject);
-                const index = objects.findIndex(obj => obj.mesh === selectedObject);
-                if (index > -1) {
-                    objects.splice(index, 1);
-                }
-                clearSelection();
-            }
-        };
+    if (!selectedObject) {
+        console.warn('No object selected for deletion');
+        return;
+    }
+    
+    try {
+        // Remove from scene
+        objectsGroup.remove(selectedObject);
         
-        fadeOut();
+        // Remove from objects array
+        const index = objects.findIndex(obj => obj.mesh === selectedObject);
+        if (index > -1) {
+            objects.splice(index, 1);
+        }
+        
+        // Clear selection
+        clearSelection();
+        
+        console.log('Object deleted successfully');
+    } catch (error) {
+        console.error('Error deleting object:', error);
     }
 }
 
