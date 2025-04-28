@@ -1,21 +1,35 @@
 import React from 'react';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
-import { Box } from './components/Box';
-import VersionDisplay from './components/VersionDisplay';
+import { EditorProvider } from './context/EditorContext';
+import ShapeToolbar from './components/ShapeToolbar';
+import BooleanToolbar from './components/BooleanToolbar';
+import ViewportControls from './components/ViewportControls';
+import PropertyPanel from './components/PropertyPanel';
+import TextTools from './components/TextTools';
+import ComponentLibrary from './components/ComponentLibrary';
+import Scene from './components/Scene';
+import './index.css';
 
 function App() {
   return (
-    <div className="h-screen w-full bg-gray-900">
-      <Canvas className="w-full h-full">
-        <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} />
-        <Box position={[-1.2, 0, 0]} />
-        <Box position={[1.2, 0, 0]} />
-        <OrbitControls />
-      </Canvas>
-      <VersionDisplay />
-    </div>
+    <EditorProvider>
+      <div className="app">
+        <div className="toolbar-container">
+          <ShapeToolbar />
+          <BooleanToolbar />
+          <ViewportControls />
+        </div>
+        
+        <div className="main-content">
+          <Scene />
+          
+          <div className="side-panel">
+            <PropertyPanel />
+            <TextTools />
+            <ComponentLibrary />
+          </div>
+        </div>
+      </div>
+    </EditorProvider>
   );
 }
 

@@ -6,11 +6,11 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Initializing UI event handlers...');
 
-    // Mouse event handlers
-    document.addEventListener('mousedown', handleMouseDown);
-    document.addEventListener('mouseup', handleMouseUp);
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('wheel', handleMouseWheel);
+// Mouse event handlers
+document.addEventListener('mousedown', handleMouseDown);
+document.addEventListener('mouseup', handleMouseUp);
+document.addEventListener('mousemove', handleMouseMove);
+document.addEventListener('wheel', handleMouseWheel);
 
     // Initialize UI elements
     initializeUIElements();
@@ -19,19 +19,19 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeUIElements() {
     console.log('Initializing UI elements...');
 
-    // Button event listeners for shape creation
+// Button event listeners for shape creation
     const cubeBtn = document.getElementById('cubeBtn');
     if (cubeBtn) {
         console.log('Found cube button');
         cubeBtn.addEventListener('click', () => {
             console.log('Cube button clicked');
-            const cube = createCube();
+    const cube = createCube();
             if (cube) {
-                clearSelection();
-                selectedObject = cube;
-                selectedObjects = [cube];
-                cube.material.emissive.setHex(0x555555);
-                updateGUI(cube);
+    clearSelection();
+    selectedObject = cube;
+    selectedObjects = [cube];
+    cube.material.emissive.setHex(0x555555);
+    updateGUI(cube);
                 console.log('Cube added and selected');
             }
         });
@@ -44,13 +44,13 @@ function initializeUIElements() {
         console.log('Found sphere button');
         sphereBtn.addEventListener('click', () => {
             console.log('Sphere button clicked');
-            const sphere = createSphere();
+    const sphere = createSphere();
             if (sphere) {
-                clearSelection();
-                selectedObject = sphere;
-                selectedObjects = [sphere];
-                sphere.material.emissive.setHex(0x555555);
-                updateGUI(sphere);
+    clearSelection();
+    selectedObject = sphere;
+    selectedObjects = [sphere];
+    sphere.material.emissive.setHex(0x555555);
+    updateGUI(sphere);
                 console.log('Sphere added and selected');
             }
         });
@@ -63,13 +63,13 @@ function initializeUIElements() {
         console.log('Found cylinder button');
         cylinderBtn.addEventListener('click', () => {
             console.log('Cylinder button clicked');
-            const cylinder = createCylinder();
+    const cylinder = createCylinder();
             if (cylinder) {
-                clearSelection();
-                selectedObject = cylinder;
-                selectedObjects = [cylinder];
-                cylinder.material.emissive.setHex(0x555555);
-                updateGUI(cylinder);
+    clearSelection();
+    selectedObject = cylinder;
+    selectedObjects = [cylinder];
+    cylinder.material.emissive.setHex(0x555555);
+    updateGUI(cylinder);
                 console.log('Cylinder added and selected');
             }
         });
@@ -82,13 +82,13 @@ function initializeUIElements() {
         console.log('Found cone button');
         coneBtn.addEventListener('click', () => {
             console.log('Cone button clicked');
-            const cone = createCone();
+    const cone = createCone();
             if (cone) {
-                clearSelection();
-                selectedObject = cone;
-                selectedObjects = [cone];
-                cone.material.emissive.setHex(0x555555);
-                updateGUI(cone);
+    clearSelection();
+    selectedObject = cone;
+    selectedObjects = [cone];
+    cone.material.emissive.setHex(0x555555);
+    updateGUI(cone);
                 console.log('Cone added and selected');
             }
         });
@@ -103,7 +103,7 @@ function initializeUIElements() {
             console.log('Pyramid button clicked');
             const pyramid = createPyramid();
             if (pyramid) {
-                clearSelection();
+    clearSelection();
                 selectedObject = pyramid;
                 selectedObjects = [pyramid];
                 pyramid.material.emissive.setHex(0x555555);
@@ -118,22 +118,22 @@ function initializeUIElements() {
     const deleteBtn = document.getElementById('deleteBtn');
     if (deleteBtn) {
         deleteBtn.addEventListener('click', () => {
-            if (selectedObjects.length > 0) {
-                for (let obj of selectedObjects) {
-                    const objData = findObjectFromMesh(obj);
-                    if (objData) {
-                        objects.splice(objects.indexOf(objData), 1);
-                    }
-                    objectsGroup.remove(obj);
-                }
-                selectedObject = null;
-                selectedObjects = [];
-                resetGUI();
+    if (selectedObjects.length > 0) {
+        for (let obj of selectedObjects) {
+            const objData = findObjectFromMesh(obj);
+            if (objData) {
+                objects.splice(objects.indexOf(objData), 1);
             }
-        });
+            objectsGroup.remove(obj);
+        }
+        selectedObject = null;
+        selectedObjects = [];
+        resetGUI();
+    }
+});
     }
 
-    // Boolean operation buttons
+// Boolean operation buttons
     const unionBtn = document.getElementById('unionBtn');
     if (unionBtn) {
         unionBtn.addEventListener('click', performUnion);
@@ -171,29 +171,29 @@ function initializeUIElements() {
         });
     });
 
-    // Tab switching
+// Tab switching
     const shapesTab = document.getElementById('shapesTab');
     if (shapesTab) {
         shapesTab.addEventListener('click', () => {
-            switchTab('shapes');
-        });
+    switchTab('shapes');
+});
     }
 
     const textTab = document.getElementById('textTab');
     if (textTab) {
         textTab.addEventListener('click', () => {
-            switchTab('text');
-        });
+    switchTab('text');
+});
     }
 
     const componentsTab = document.getElementById('componentsTab');
     if (componentsTab) {
         componentsTab.addEventListener('click', () => {
-            switchTab('components');
-        });
+    switchTab('components');
+});
     }
 
-    // Text tool handlers
+// Text tool handlers
     const textHeightValue = document.getElementById('textHeightValue');
     const textHeight = document.getElementById('textHeight');
     const textDepthValue = document.getElementById('textDepthValue');
@@ -204,52 +204,52 @@ function initializeUIElements() {
         textHeightValue.textContent = textHeight.value;
         textHeight.addEventListener('input', (event) => {
             textHeightValue.textContent = event.target.value;
-        });
+});
     }
 
     if (textDepthValue && textDepth) {
         textDepthValue.textContent = textDepth.value;
         textDepth.addEventListener('input', (event) => {
             textDepthValue.textContent = event.target.value;
-        });
+});
     }
 
     if (addTextBtn) {
         addTextBtn.addEventListener('click', () => {
             const textInput = document.getElementById('textInput');
             if (!textInput || !textInput.value) {
-                alert("Please enter text");
-                return;
-            }
-            
+        alert("Please enter text");
+        return;
+    }
+    
             const height = parseFloat(textHeight.value);
             const depth = parseFloat(textDepth.value);
-            
+    
             const textMesh = createText(textInput.value, height, depth);
-            if (textMesh) {
-                clearSelection();
-                selectedObject = textMesh;
-                selectedObjects = [textMesh];
-                textMesh.material.emissive.setHex(0x555555);
-                updateGUI(textMesh);
-            }
-        });
+    if (textMesh) {
+        clearSelection();
+        selectedObject = textMesh;
+        selectedObjects = [textMesh];
+        textMesh.material.emissive.setHex(0x555555);
+        updateGUI(textMesh);
+    }
+});
     }
 
-    // Component library items
-    const componentItems = document.querySelectorAll('.component-item');
-    componentItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const type = item.getAttribute('data-type');
-            const component = createComponent(type);
-            if (component) {
-                clearSelection();
-                selectedObject = component;
-                selectedObjects = [component];
-                updateGUI(component);
-            }
-        });
+// Component library items
+const componentItems = document.querySelectorAll('.component-item');
+componentItems.forEach(item => {
+    item.addEventListener('click', () => {
+        const type = item.getAttribute('data-type');
+        const component = createComponent(type);
+        if (component) {
+            clearSelection();
+            selectedObject = component;
+            selectedObjects = [component];
+            updateGUI(component);
+        }
     });
+});
 
     console.log('UI event handlers initialized successfully');
 }

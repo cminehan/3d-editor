@@ -1,68 +1,40 @@
 # 3D Editor
 
-A modern 3D editor built with React, Three.js, and Tailwind CSS.
+A modern 3D modeling tool built with React and Three.js.
 
 ## Features
 
-- 3D scene rendering with Three.js
-- Interactive 3D objects
-- Modern UI with Tailwind CSS
-- Responsive design
+- Create and manipulate 3D shapes
+- Boolean operations (union, subtract)
+- Text tools
+- Component library
+- Property panel for precise control
+- Multiple viewport options
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js (v14 or higher)
-- npm or yarn
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/3d-editor.git
-cd 3d-editor
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Start the development server:
-```bash
-npm start
-```
-
-The application will be available at `http://localhost:3000`.
-
-## Technologies Used
+## Tech Stack
 
 - React
 - Three.js
 - React Three Fiber
 - React Three Drei
-- Tailwind CSS
+- React Spring
 
-## Project Structure
+## Development
 
-```
-src/
-  ├── components/
-  │   └── Box.js
-  ├── App.js
-  ├── index.js
-  └── index.css
-```
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm start
+   ```
 
-## Contributing
+## Deployment
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+This project is configured for deployment on Vercel. Simply push to your GitHub repository and connect it to Vercel for automatic deployments.
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT

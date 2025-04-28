@@ -1,49 +1,28 @@
 {
   "name": "3d-editor",
   "version": "1.0.0",
-  "description": "A 3D modeling tool inspired by Tinkercad",
+  "description": "3D Editor with React and Three.js",
   "author": "Your Name",
   "license": "MIT",
-  "main": "index.html",
   "scripts": {
-    "start": "serve .",
-    "build": "echo 'No build step required'",
-    "dev": "serve .",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "devDependencies": {
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.0",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
-    "autoprefixer": "^10.4.14",
-    "postcss": "^8.4.21",
-    "serve": "^14.2.0",
-    "tailwindcss": "^3.3.0",
-    "typescript": "^4.9.5"
-  },
-  "keywords": [
-    "3d",
-    "modeling",
-    "design",
-    "cad",
-    "three.js"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/yourusername/3d-editor"
-  },
   "dependencies": {
-    "@react-three/drei": "^9.80.0",
-    "@react-three/fiber": "^8.13.0",
+    "@react-three/drei": "^9.122.0",
+    "@react-three/fiber": "^8.15.16",
+    "@react-spring/three": "^9.7.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "three": "^0.154.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0"
   },
   "browserslist": {
     "production": [
