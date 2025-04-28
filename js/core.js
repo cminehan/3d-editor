@@ -241,10 +241,6 @@ function initScene() {
         mouse = new THREE.Vector2();
         console.log('Raycaster initialized');
         
-        // Initialize GUI
-        gui = new dat.GUI();
-        console.log('GUI initialized');
-        
         // Add test cube
         const testCube = createCube();
         testCube.position.set(0, 1, 0);
@@ -425,112 +421,48 @@ function findObjectFromMesh(mesh) {
 
 // Reset the GUI controls
 function resetGUI() {
-    gui.destroy();
-    gui = new dat.GUI();
+    // Clear property inputs
+    const properties = ['pos', 'rot', 'scale'];
+    const axes = ['X', 'Y', 'Z'];
+    
+    properties.forEach(prop => {
+        axes.forEach(axis => {
+            const input = document.getElementById(`${prop}${axis}`);
+            if (input) {
+                input.value = '';
+            }
+        });
+    });
 }
 
 // Update GUI for selected object
 function updateGUI(object) {
-    resetGUI();
-    
     if (!object) return;
     
-    // For groups without materials, just show transform props
-    if (!object.material) {
-        // Transform properties
-        const transformFolder = gui.addFolder('Position');
-        transformFolder.add(object.position, 'x', -10, 10).name('X Position');
-        transformFolder.add(object.position, 'y', 0, 10).name('Y Position');
-        transformFolder.add(object.position, 'z', -10, 10).name('Z Position');
-        transformFolder.open();
-        
-        // Rotation properties
-        const rotationFolder = gui.addFolder('Rotation');
-        
-        // Convert rotation to degrees for UI
-        const rotDegrees = {
-            x: THREE.MathUtils.radToDeg(object.rotation.x),
-            y: THREE.MathUtils.radToDeg(object.rotation.y),
-            z: THREE.MathUtils.radToDeg(object.rotation.z)
-        };
-        
-        // Add controls and connect to rotation in radians
-        rotationFolder.add(rotDegrees, 'x', 0, 360).name('X Rotation').onChange(value => {
-            object.rotation.x = THREE.MathUtils.degToRad(value);
+    // Update property inputs
+    const properties = ['pos', 'rot', 'scale'];
+    const axes = ['X', 'Y', 'Z'];
+    
+    properties.forEach(prop => {
+        axes.forEach(axis => {
+            const input = document.getElementById(`${prop}${axis}`);
+            if (input) {
+                let value;
+                switch(prop) {
+                    case 'pos':
+                        value = object.position[axis.toLowerCase()];
+                        break;
+                    case 'rot':
+                        value = THREE.MathUtils.radToDeg(object.rotation[axis.toLowerCase()]);
+                        break;
+                    case 'scale':
+                        value = object.scale[axis.toLowerCase()];
+                        break;
+                }
+                input.value = value.toFixed(2);
+            }
         });
-        rotationFolder.add(rotDegrees, 'y', 0, 360).name('Y Rotation').onChange(value => {
-            object.rotation.y = THREE.MathUtils.degToRad(value);
-        });
-        rotationFolder.add(rotDegrees, 'z', 0, 360).name('Z Rotation').onChange(value => {
-            object.rotation.z = THREE.MathUtils.degToRad(value);
-        });
-        rotationFolder.open();
-        
-        // Scale properties
-        const scaleFolder = gui.addFolder('Scale');
-        scaleFolder.add(object.scale, 'x', 0.1, 5).name('X Scale');
-        scaleFolder.add(object.scale, 'y', 0.1, 5).name('Y Scale');
-        scaleFolder.add(object.scale, 'z', 0.1, 5).name('Z Scale');
-        scaleFolder.open();
-        
-        return;
-    }
-    
-    // Color properties
-    const colorFolder = gui.addFolder('Color');
-    guiParams.color = '#' + (object.material.color ? object.material.color.getHexString() : 'ffffff');
-    colorFolder.addColor(guiParams, 'color').onChange((value) => {
-        object.material.color.set(value);
     });
-    
-    // Hole property for boolean operations
-    const objData = findObjectFromMesh(object);
-    if (objData) {
-        guiParams.isHole = objData.isHole;
-        colorFolder.add(guiParams, 'isHole').onChange((value) => {
-            objData.isHole = value;
-            object.material.transparent = value;
-            object.material.opacity = value ? 0.5 : 1.0;
-        });
-    }
-    
-    colorFolder.open();
-    
-    // Transform properties
-    const transformFolder = gui.addFolder('Position');
-    transformFolder.add(object.position, 'x', -10, 10).name('X Position');
-    transformFolder.add(object.position, 'y', 0, 10).name('Y Position');
-    transformFolder.add(object.position, 'z', -10, 10).name('Z Position');
-    transformFolder.open();
-    
-    // Rotation properties
-    const rotationFolder = gui.addFolder('Rotation');
-    
-    // Convert rotation to degrees for UI
-    const rotDegrees = {
-        x: THREE.MathUtils.radToDeg(object.rotation.x),
-        y: THREE.MathUtils.radToDeg(object.rotation.y),
-        z: THREE.MathUtils.radToDeg(object.rotation.z)
-    };
-    
-    // Add controls and connect to rotation in radians
-    rotationFolder.add(rotDegrees, 'x', 0, 360).name('X Rotation').onChange(value => {
-        object.rotation.x = THREE.MathUtils.degToRad(value);
-    });
-    rotationFolder.add(rotDegrees, 'y', 0, 360).name('Y Rotation').onChange(value => {
-        object.rotation.y = THREE.MathUtils.degToRad(value);
-    });
-    rotationFolder.add(rotDegrees, 'z', 0, 360).name('Z Rotation').onChange(value => {
-        object.rotation.z = THREE.MathUtils.degToRad(value);
-    });
-    rotationFolder.open();
-    
-    // Scale properties
-    const scaleFolder = gui.addFolder('Scale');
-    scaleFolder.add(object.scale, 'x', 0.1, 5).name('X Scale');
-    scaleFolder.add(object.scale, 'y', 0.1, 5).name('Y Scale');
-    scaleFolder.add(object.scale, 'z', 0.1, 5).name('Z Scale');
-    scaleFolder.open();
 }
 
 // Snap position to grid
