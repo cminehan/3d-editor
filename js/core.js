@@ -340,11 +340,17 @@ function onCanvasClick(event) {
                     }
                 }
             } else {
+                // Only clear selection if we're selecting a different object
+                if (!selectedObjects.includes(object)) {
+                    clearSelection();
+                }
                 selectObject(object);
             }
         } else {
-            console.log('No object clicked, deselecting');
-            clearSelection();
+            // Only clear selection if clicking on empty space
+            if (!event.shiftKey) {
+                clearSelection();
+            }
         }
     } catch (error) {
         console.error('Error during canvas click handling:', error);
@@ -354,9 +360,12 @@ function onCanvasClick(event) {
 // Select an object
 function selectObject(mesh) {
     console.log('Selecting object:', mesh.name);
-    clearSelection();
+    
+    // Don't clear selection here, it's handled in onCanvasClick
     selectedObject = mesh;
-    selectedObjects.push(mesh);
+    if (!selectedObjects.includes(mesh)) {
+        selectedObjects.push(mesh);
+    }
     
     // Highlight selected object
     if (mesh.material) {
