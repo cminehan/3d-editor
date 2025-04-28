@@ -4,12 +4,17 @@
  */
 
 // Version information
-const VERSION = '1.0.23';
+const VERSION = '1.0.24';
 window.APP_VERSION = VERSION;
 
 // Initialize the application on document load
 document.addEventListener('DOMContentLoaded', function() {
     console.log('3D Editor initializing...');
+    
+    // Set version numbers
+    document.querySelectorAll('[id^="versionNumber"]').forEach(el => {
+        el.textContent = VERSION;
+    });
     
     // Set up event listeners for shape creation
     setupShapeButtons();
@@ -55,11 +60,6 @@ function setupVersionHistory() {
     const modal = document.getElementById('versionHistoryModal');
     const btn = document.getElementById('versionHistoryBtn');
     const span = document.getElementsByClassName('close')[0];
-    
-    // Update version display
-    document.querySelectorAll('[id^="versionNumber"]').forEach(el => {
-        el.textContent = VERSION;
-    });
     
     // Open modal
     btn.onclick = function() {
@@ -165,52 +165,25 @@ function setupViewControls() {
 
 // Set up transform control buttons
 function setupTransformControls() {
-    // Initialize transform controls if not already initialized
-    if (!transformControls) {
-        transformControls = new THREE.TransformControls(camera, renderer.domElement);
-        scene.add(transformControls);
-    }
-    
     const moveBtn = document.getElementById('moveBtn');
     const rotateBtn = document.getElementById('rotateBtn');
     const scaleBtn = document.getElementById('scaleBtn');
     
     moveBtn.addEventListener('click', function() {
         if (selectedObject) {
-            transformControls.setMode('translate');
-            moveBtn.classList.add('active');
-            rotateBtn.classList.remove('active');
-            scaleBtn.classList.remove('active');
+            setTransformMode('translate');
         }
     });
     
     rotateBtn.addEventListener('click', function() {
         if (selectedObject) {
-            transformControls.setMode('rotate');
-            rotateBtn.classList.add('active');
-            moveBtn.classList.remove('active');
-            scaleBtn.classList.remove('active');
+            setTransformMode('rotate');
         }
     });
     
     scaleBtn.addEventListener('click', function() {
         if (selectedObject) {
-            transformControls.setMode('scale');
-            scaleBtn.classList.add('active');
-            moveBtn.classList.remove('active');
-            rotateBtn.classList.remove('active');
-        }
-    });
-    
-    // Add transform controls event listeners
-    transformControls.addEventListener('dragging-changed', function(event) {
-        orbitControls.enabled = !event.value;
-    });
-    
-    transformControls.addEventListener('change', function() {
-        if (selectedObject) {
-            // Update object list instead of property inputs
-            updateObjectList();
+            setTransformMode('scale');
         }
     });
 }

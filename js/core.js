@@ -210,31 +210,8 @@ function initScene() {
         onWindowResize();
         
         // Initialize transform controls
-        transformControls = new THREE.TransformControls(camera, renderer.domElement);
-        transformControls.addEventListener('dragging-changed', function(event) {
-            orbitControls.enabled = !event.value;
-        });
-        
-        // Set up transform control modes
-        transformControls.setMode('translate');
-        transformControls.setSpace('world');
-        transformControls.setSize(0.75);
-        transformControls.showX = true;
-        transformControls.showY = true;
-        transformControls.showZ = true;
-        
-        // Add visual feedback for transform controls
-        transformControls.addEventListener('mouseDown', function() {
-            document.body.style.cursor = 'move';
-        });
-        
-        transformControls.addEventListener('mouseUp', function() {
-            document.body.style.cursor = 'auto';
-        });
-        
-        transformControls.visible = false;
-        scene.add(transformControls);
-        console.log('Transform controls initialized');
+        initTransformControls();
+        initPropertyListeners();
         
         // Initialize raycaster
         raycaster = new THREE.Raycaster();
@@ -247,9 +224,6 @@ function initScene() {
         testCube.name = 'test_cube';
         testCube.userData = { type: 'cube' };
         console.log('Test cube added to scene');
-        
-        initTransformControls();
-        initPropertyListeners();
         
         console.log('Scene initialization complete');
     } catch (error) {
@@ -353,11 +327,53 @@ function onCanvasClick(event) {
     }
 }
 
+// Initialize transform controls
+function initTransformControls() {
+    if (!transformControls) {
+        transformControls = new THREE.TransformControls(camera, renderer.domElement);
+        scene.add(transformControls);
+        
+        // Add event listeners
+        transformControls.addEventListener('dragging-changed', function(event) {
+            orbitControls.enabled = !event.value;
+        });
+        
+        transformControls.addEventListener('change', function() {
+            if (selectedObject) {
+                updateObjectList();
+            }
+        });
+    }
+}
+
+// Set transform mode
+function setTransformMode(mode) {
+    if (!transformControls || !selectedObject) return;
+    
+    transformControls.setMode(mode);
+    
+    // Update button states
+    const buttons = {
+        'translate': document.getElementById('moveBtn'),
+        'rotate': document.getElementById('rotateBtn'),
+        'scale': document.getElementById('scaleBtn')
+    };
+    
+    Object.entries(buttons).forEach(([btnMode, btn]) => {
+        if (btn) {
+            btn.classList.toggle('active', btnMode === mode);
+        }
+    });
+}
+
 // Select an object
 function selectObject(mesh) {
     console.log('Selecting object:', mesh.name);
     
-    // Don't clear selection here, it's handled in onCanvasClick
+    // Clear previous selection
+    clearSelection();
+    
+    // Set new selection
     selectedObject = mesh;
     if (!selectedObjects.includes(mesh)) {
         selectedObjects.push(mesh);
@@ -374,8 +390,8 @@ function selectObject(mesh) {
         transformControls.visible = true;
     }
     
-    // Update GUI
-    updateGUI(mesh);
+    // Update object list
+    updateObjectList();
 }
 
 // Clear selection
@@ -394,9 +410,10 @@ function clearSelection() {
     if (transformControls) {
         transformControls.detach();
         transformControls.visible = false;
-        document.body.style.cursor = 'auto';
     }
-    resetGUI();
+    
+    // Update object list
+    updateObjectList();
 }
 
 // Helper function to get random color
@@ -612,22 +629,6 @@ function setActiveViewport(view) {
     
     orbitControls.update();
     console.log('Viewport updated:', view);
-}
-
-function initTransformControls() {
-    transformControls = new THREE.TransformControls(camera, renderer.domElement);
-    scene.add(transformControls);
-    
-    transformControls.addEventListener('dragging-changed', (event) => {
-        orbitControls.enabled = !event.value;
-    });
-}
-
-function setTransformMode(mode) {
-    currentMode = mode;
-    if (selectedObject) {
-        transformControls.setMode(mode);
-    }
 }
 
 function initPropertyListeners() {
