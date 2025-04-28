@@ -206,7 +206,8 @@ function setupTransformControls() {
     
     transformControls.addEventListener('change', function() {
         if (selectedObject) {
-            updatePropertyInputs();
+            // Update object list instead of property inputs
+            updateObjectList();
         }
     });
 }
