@@ -162,40 +162,43 @@ function initializeUIElements() {
         });
     });
 
-    // Transform control buttons
-    const moveBtn = document.getElementById('moveBtn');
-    const rotateBtn = document.getElementById('rotateBtn');
-    const scaleBtn = document.getElementById('scaleBtn');
+    // Transform control buttons (right panel only)
+    const moveBtnPanel = document.getElementById('moveBtnPanel');
+    const rotateBtnPanel = document.getElementById('rotateBtnPanel');
+    const scaleBtnPanel = document.getElementById('scaleBtnPanel');
     
-    if (moveBtn) {
-        moveBtn.addEventListener('click', function() {
+    if (moveBtnPanel) {
+        moveBtnPanel.addEventListener('click', function(e) {
+            e.stopPropagation();
             if (selectedObject) {
                 transformControls.setMode('translate');
-                moveBtn.classList.add('active');
-                rotateBtn.classList.remove('active');
-                scaleBtn.classList.remove('active');
+                moveBtnPanel.classList.add('active');
+                rotateBtnPanel.classList.remove('active');
+                scaleBtnPanel.classList.remove('active');
             }
         });
     }
     
-    if (rotateBtn) {
-        rotateBtn.addEventListener('click', function() {
+    if (rotateBtnPanel) {
+        rotateBtnPanel.addEventListener('click', function(e) {
+            e.stopPropagation();
             if (selectedObject) {
                 transformControls.setMode('rotate');
-                rotateBtn.classList.add('active');
-                moveBtn.classList.remove('active');
-                scaleBtn.classList.remove('active');
+                rotateBtnPanel.classList.add('active');
+                moveBtnPanel.classList.remove('active');
+                scaleBtnPanel.classList.remove('active');
             }
         });
     }
     
-    if (scaleBtn) {
-        scaleBtn.addEventListener('click', function() {
+    if (scaleBtnPanel) {
+        scaleBtnPanel.addEventListener('click', function(e) {
+            e.stopPropagation();
             if (selectedObject) {
                 transformControls.setMode('scale');
-                scaleBtn.classList.add('active');
-                moveBtn.classList.remove('active');
-                rotateBtn.classList.remove('active');
+                scaleBtnPanel.classList.add('active');
+                moveBtnPanel.classList.remove('active');
+                rotateBtnPanel.classList.remove('active');
             }
         });
     }

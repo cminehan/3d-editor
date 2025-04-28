@@ -35,7 +35,7 @@
         <h1 class="title">3D Creator Studio <span class="draft-badge">Draft</span></h1>
         <p class="subtitle">Create amazing 3D designs!</p>
         <div class="version-info">
-            <span class="version">v1.0.18</span>
+            <span class="version">v1.0.19</span>
             <button class="version-history-btn" id="versionHistoryBtn">View History</button>
         </div>
     </div>
@@ -123,15 +123,15 @@
                 <h3>Properties</h3>
                 <div id="object-properties">
                     <div class="transform-controls">
-                        <button class="tool-btn" id="moveBtn" data-mode="move" title="Move objects (G)">
+                        <button class="tool-btn" id="moveBtnPanel" data-mode="move" title="Move objects (G)">
                             <span class="icon">✋</span>
                             <span class="label">Move</span>
                         </button>
-                        <button class="tool-btn" id="rotateBtn" data-mode="rotate" title="Rotate objects (R)">
+                        <button class="tool-btn" id="rotateBtnPanel" data-mode="rotate" title="Rotate objects (R)">
                             <span class="icon">🔄</span>
                             <span class="label">Rotate</span>
                         </button>
-                        <button class="tool-btn" id="scaleBtn" data-mode="scale" title="Resize objects (S)">
+                        <button class="tool-btn" id="scaleBtnPanel" data-mode="scale" title="Resize objects (S)">
                             <span class="icon">📏</span>
                             <span class="label">Resize</span>
                         </button>
@@ -214,7 +214,14 @@
             <h2>Version History</h2>
             <div class="version-list">
                 <div class="version-item">
-                    <h3>v1.0.18 (Current)</h3>
+                    <h3>v1.0.19 (Current)</h3>
+                    <ul>
+                        <li>Fixed transform mode button conflicts and selection issues</li>
+                        <li>Sidebar and right panel controls now work independently</li>
+                    </ul>
+                </div>
+                <div class="version-item">
+                    <h3>v1.0.18</h3>
                     <ul>
                         <li>Removed redundant dat.GUI controls</li>
                         <li>Improved property panel updates</li>
