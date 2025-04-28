@@ -343,6 +343,10 @@ function initTransformControls() {
                 updateObjectList();
             }
         });
+        
+        // Set initial mode
+        transformControls.setMode('translate');
+        transformControls.visible = false;
     }
 }
 
@@ -350,6 +354,10 @@ function initTransformControls() {
 function setTransformMode(mode) {
     if (!transformControls || !selectedObject) return;
     
+    // Store current selection
+    const currentObject = selectedObject;
+    
+    // Set transform mode
     transformControls.setMode(mode);
     
     // Update button states
@@ -364,6 +372,10 @@ function setTransformMode(mode) {
             btn.classList.toggle('active', btnMode === mode);
         }
     });
+    
+    // Reattach transform controls to maintain selection
+    transformControls.attach(currentObject);
+    transformControls.visible = true;
 }
 
 // Select an object
