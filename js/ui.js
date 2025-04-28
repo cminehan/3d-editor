@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize UI elements
     initializeUIElements();
+    updateObjectList();
 });
 
 function initializeUIElements() {
@@ -502,3 +503,65 @@ function switchTab(tabName) {
             break;
     }
 }
+
+// Populate the Objects list and handle selection
+function updateObjectList() {
+    const objectList = document.getElementById('objectList');
+    if (!objectList) return;
+    objectList.innerHTML = '';
+    objectsGroup.children.forEach((obj, idx) => {
+        const li = document.createElement('li');
+        li.textContent = obj.name || obj.userData.type || `Object ${idx+1}`;
+        li.className = 'object-list-item' + (selectedObject === obj ? ' selected' : '');
+        li.style.cursor = 'pointer';
+        li.onclick = (e) => {
+            e.stopPropagation();
+            selectObject(obj);
+        };
+        objectList.appendChild(li);
+    });
+}
+
+// Call updateObjectList whenever objects are added/removed/selected
+// Patch createCube, createSphere, etc. to call updateObjectList after creation
+const _createCube = window.createCube;
+window.createCube = function() {
+    const obj = _createCube.apply(this, arguments);
+    updateObjectList();
+    return obj;
+};
+const _createSphere = window.createSphere;
+window.createSphere = function() {
+    const obj = _createSphere.apply(this, arguments);
+    updateObjectList();
+    return obj;
+};
+const _createCylinder = window.createCylinder;
+window.createCylinder = function() {
+    const obj = _createCylinder.apply(this, arguments);
+    updateObjectList();
+    return obj;
+};
+const _createCone = window.createCone;
+window.createCone = function() {
+    const obj = _createCone.apply(this, arguments);
+    updateObjectList();
+    return obj;
+};
+const _createPyramid = window.createPyramid;
+window.createPyramid = function() {
+    const obj = _createPyramid.apply(this, arguments);
+    updateObjectList();
+    return obj;
+};
+// Also update list after deletion
+const _clearSelection = window.clearSelection;
+window.clearSelection = function() {
+    _clearSelection.apply(this, arguments);
+    updateObjectList();
+};
+const _selectObject = window.selectObject;
+window.selectObject = function(obj) {
+    _selectObject.apply(this, arguments);
+    updateObjectList();
+};

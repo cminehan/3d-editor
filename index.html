@@ -35,7 +35,7 @@
         <h1 class="title">3D Creator Studio <span class="draft-badge">Draft</span></h1>
         <p class="subtitle">Create amazing 3D designs!</p>
         <div class="version-info">
-            <span class="version">v1.0.19</span>
+            <span class="version">v1.0.20</span>
             <button class="version-history-btn" id="versionHistoryBtn">View History</button>
         </div>
     </div>
@@ -112,6 +112,10 @@
         <div id="view3d"></div>
         
         <div class="right-panel">
+            <div class="objects-panel">
+                <h3>Objects</h3>
+                <ul id="objectList"></ul>
+            </div>
             <div class="view-controls">
                 <button class="view-btn" data-view="perspective" title="3D View">3D</button>
                 <button class="view-btn" data-view="top" title="Top View">Top</button>
@@ -138,51 +142,6 @@
                     </div>
                     <div class="object-details">
                         <p class="help-text">Select an object to see its properties</p>
-                        <div id="position-controls" class="property-group">
-                            <h4>Position</h4>
-                            <div class="property-row">
-                                <label>X:</label>
-                                <input type="number" id="posX" step="0.1">
-                            </div>
-                            <div class="property-row">
-                                <label>Y:</label>
-                                <input type="number" id="posY" step="0.1">
-                            </div>
-                            <div class="property-row">
-                                <label>Z:</label>
-                                <input type="number" id="posZ" step="0.1">
-                            </div>
-                        </div>
-                        <div id="rotation-controls" class="property-group">
-                            <h4>Rotation</h4>
-                            <div class="property-row">
-                                <label>X:</label>
-                                <input type="number" id="rotX" step="1">
-                            </div>
-                            <div class="property-row">
-                                <label>Y:</label>
-                                <input type="number" id="rotY" step="1">
-                            </div>
-                            <div class="property-row">
-                                <label>Z:</label>
-                                <input type="number" id="rotZ" step="1">
-                            </div>
-                        </div>
-                        <div id="scale-controls" class="property-group">
-                            <h4>Scale</h4>
-                            <div class="property-row">
-                                <label>X:</label>
-                                <input type="number" id="scaleX" step="0.1" min="0.1">
-                            </div>
-                            <div class="property-row">
-                                <label>Y:</label>
-                                <input type="number" id="scaleY" step="0.1" min="0.1">
-                            </div>
-                            <div class="property-row">
-                                <label>Z:</label>
-                                <input type="number" id="scaleZ" step="0.1" min="0.1">
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -195,6 +154,10 @@
                     <button class="template-btn" data-template="car">🚗 Car</button>
                     <button class="template-btn" data-template="castle">🏰 Castle</button>
                 </div>
+            </div>
+            <div class="version-info">
+                <span class="version">v1.0.20</span>
+                <button class="version-history-btn" id="versionHistoryBtn">View History</button>
             </div>
         </div>
     </div>
@@ -214,7 +177,15 @@
             <h2>Version History</h2>
             <div class="version-list">
                 <div class="version-item">
-                    <h3>v1.0.19 (Current)</h3>
+                    <h3>v1.0.20 (Current)</h3>
+                    <ul>
+                        <li>Added Objects list to right panel for secondary selection</li>
+                        <li>Removed duplicate property controls</li>
+                        <li>Fixed modify buttons to not deselect and always engage transform mode</li>
+                    </ul>
+                </div>
+                <div class="version-item">
+                    <h3>v1.0.19</h3>
                     <ul>
                         <li>Fixed transform mode button conflicts and selection issues</li>
                         <li>Sidebar and right panel controls now work independently</li>
