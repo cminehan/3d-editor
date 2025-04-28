@@ -3,7 +3,7 @@
  * Initializes the application and sets up event listeners
  */
 
-// Version information
+// Version information - single source of truth
 const VERSION = '1.0.24';
 window.APP_VERSION = VERSION;
 
@@ -11,7 +11,7 @@ window.APP_VERSION = VERSION;
 document.addEventListener('DOMContentLoaded', function() {
     console.log('3D Editor initializing...');
     
-    // Set version numbers
+    // Set version numbers immediately
     document.querySelectorAll('[id^="versionNumber"]').forEach(el => {
         el.textContent = VERSION;
     });
