@@ -122,42 +122,150 @@
                 <button class="view-btn" data-view="front" title="Front View">Front</button>
                 <button class="view-btn" data-view="side" title="Side View">Side</button>
             </div>
-            
-            <div class="properties-panel">
-                <h3>Properties</h3>
-                <div id="object-properties">
-                    <div class="transform-controls">
-                        <button class="tool-btn" id="moveBtnPanel" data-mode="move" title="Move objects (G)">
-                            <span class="icon">✋</span>
-                            <span class="label">Move</span>
-                        </button>
-                        <button class="tool-btn" id="rotateBtnPanel" data-mode="rotate" title="Rotate objects (R)">
-                            <span class="icon">🔄</span>
-                            <span class="label">Rotate</span>
-                        </button>
-                        <button class="tool-btn" id="scaleBtnPanel" data-mode="scale" title="Resize objects (S)">
-                            <span class="icon">📏</span>
-                            <span class="label">Resize</span>
-                        </button>
-                    </div>
-                    <div class="object-details">
-                        <p class="help-text">Select an object to see its properties</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="templates-panel">
-                <h3>Quick Start</h3>
-                <div class="template-buttons">
-                    <button class="template-btn" data-template="house">🏠 House</button>
-                    <button class="template-btn" data-template="robot">🤖 Robot</button>
-                    <button class="template-btn" data-template="car">🚗 Car</button>
-                    <button class="template-btn" data-template="castle">🏰 Castle</button>
-                </div>
+            <div class="transform-controls">
+                <button class="tool-btn" id="moveBtnPanel" data-mode="move" title="Move objects (G)">
+                    <span class="icon">✋</span>
+                    <span class="label">Move</span>
+                </button>
+                <button class="tool-btn" id="rotateBtnPanel" data-mode="rotate" title="Rotate objects (R)">
+                    <span class="icon">🔄</span>
+                    <span class="label">Rotate</span>
+                </button>
+                <button class="tool-btn" id="scaleBtnPanel" data-mode="scale" title="Resize objects (S)">
+                    <span class="icon">📏</span>
+                    <span class="label">Resize</span>
+                </button>
             </div>
             <div class="version-info">
-                <span class="version">v1.0.20</span>
+                <span class="version">v1.0.21</span>
                 <button class="version-history-btn" id="versionHistoryBtn">View History</button>
+            </div>
+            <div class="version-list">
+                <div class="version-item">
+                    <h3>v1.0.21 (Current)</h3>
+                    <ul>
+                        <li>Styled Objects list to match UI</li>
+                        <li>Fixed duplicate object creation/listing</li>
+                        <li>Removed Properties panel and all property field code</li>
+                        <li>Transform controls now work without errors</li>
+                    </ul>
+                </div>
+                <div class="version-item">
+                    <h3>v1.0.20</h3>
+                    <ul>
+                        <li>Added Objects list to right panel for secondary selection</li>
+                        <li>Removed duplicate property controls</li>
+                        <li>Fixed modify buttons to not deselect and always engage transform mode</li>
+                    </ul>
+                </div>
+                <div class="version-item">
+                    <h3>v1.0.19</h3>
+                    <ul>
+                        <li>Fixed transform mode button conflicts and selection issues</li>
+                        <li>Sidebar and right panel controls now work independently</li>
+                    </ul>
+                </div>
+                <div class="version-item">
+                    <h3>v1.0.18</h3>
+                    <ul>
+                        <li>Removed redundant dat.GUI controls</li>
+                        <li>Improved property panel updates</li>
+                        <li>Fixed object selection issues</li>
+                    </ul>
+                </div>
+                <div class="version-item">
+                    <h3>v1.0.17</h3>
+                    <ul>
+                        <li>Fixed transform controls and viewport functionality</li>
+                        <li>Improved property panel updates</li>
+                        <li>Enhanced object creation and selection</li>
+                        <li>Fixed template creation and effects</li>
+                    </ul>
+                </div>
+                <div class="version-item">
+                    <h3>v1.0.16</h3>
+                    <ul>
+                        <li>Fixed version history and deployment issues</li>
+                        <li>Improved cache control for better content delivery</li>
+                        <li>Resolved version display inconsistencies</li>
+                    </ul>
+                </div>
+                <div class="version-item">
+                    <h3>v1.0.9</h3>
+                    <ul>
+                        <li>Fixed version display issues</li>
+                        <li>Improved version history tracking</li>
+                        <li>Enhanced version update process</li>
+                    </ul>
+                </div>
+                <div class="version-item">
+                    <h3>v1.0.8</h3>
+                    <ul>
+                        <li>Added transform controls for move, rotate, and scale operations</li>
+                        <li>Implemented property panel with real-time updates</li>
+                        <li>Added snapping functionality for precise transformations</li>
+                        <li>Improved object selection and manipulation</li>
+                    </ul>
+                </div>
+                <div class="version-item">
+                    <h3>v1.0.7</h3>
+                    <ul>
+                        <li>Fixed shape visibility issues</li>
+                        <li>Improved shape creation and positioning</li>
+                        <li>Fixed transform controls and scaling</li>
+                        <li>Resolved plane reference error</li>
+                    </ul>
+                </div>
+                <div class="version-item">
+                    <h3>v1.0.6</h3>
+                    <ul>
+                        <li>Made shapes larger and more colorful</li>
+                        <li>Fixed scaling functionality</li>
+                        <li>Added scale controls to GUI</li>
+                    </ul>
+                </div>
+                <div class="version-item">
+                    <h3>v1.0.5</h3>
+                    <ul>
+                        <li>Fixed Three.js loading issues</li>
+                        <li>Added local Three.js files for better reliability</li>
+                        <li>Improved script loading order</li>
+                    </ul>
+                </div>
+                <div class="version-item">
+                    <h3>v1.0.4</h3>
+                    <ul>
+                        <li>Fixed viewing window issues</li>
+                        <li>Improved lighting and shadows</li>
+                        <li>Added debug logging</li>
+                    </ul>
+                </div>
+                <div class="version-item">
+                    <h3>v1.0.3</h3>
+                    <ul>
+                        <li>Updated UI to match Roblox style</li>
+                        <li>Improved viewport visibility</li>
+                        <li>Enhanced object creation and selection</li>
+                        <li>Added better visual feedback</li>
+                    </ul>
+                </div>
+                <div class="version-item">
+                    <h3>v1.0.2</h3>
+                    <ul>
+                        <li>Fixed viewing window issues</li>
+                        <li>Improved lighting and shadows</li>
+                        <li>Added debug logging</li>
+                    </ul>
+                </div>
+                <div class="version-item">
+                    <h3>v1.0.1</h3>
+                    <ul>
+                        <li>Initial release with basic 3D modeling capabilities</li>
+                        <li>Basic shape creation</li>
+                        <li>Object transformation tools</li>
+                        <li>Multiple viewports</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -177,7 +285,16 @@
             <h2>Version History</h2>
             <div class="version-list">
                 <div class="version-item">
-                    <h3>v1.0.20 (Current)</h3>
+                    <h3>v1.0.21 (Current)</h3>
+                    <ul>
+                        <li>Styled Objects list to match UI</li>
+                        <li>Fixed duplicate object creation/listing</li>
+                        <li>Removed Properties panel and all property field code</li>
+                        <li>Transform controls now work without errors</li>
+                    </ul>
+                </div>
+                <div class="version-item">
+                    <h3>v1.0.20</h3>
                     <ul>
                         <li>Added Objects list to right panel for secondary selection</li>
                         <li>Removed duplicate property controls</li>
