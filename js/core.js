@@ -621,32 +621,6 @@ function initTransformControls() {
     transformControls.addEventListener('dragging-changed', (event) => {
         orbitControls.enabled = !event.value;
     });
-
-    transformControls.addEventListener('change', () => {
-        if (selectedObject) {
-            updatePropertyInputs();
-        }
-    });
-}
-
-function updatePropertyInputs() {
-    if (!selectedObject) return;
-    
-    const position = selectedObject.position;
-    const rotation = selectedObject.rotation;
-    const scale = selectedObject.scale;
-    
-    document.getElementById('posX').value = position.x.toFixed(2);
-    document.getElementById('posY').value = position.y.toFixed(2);
-    document.getElementById('posZ').value = position.z.toFixed(2);
-    
-    document.getElementById('rotX').value = THREE.MathUtils.radToDeg(rotation.x).toFixed(2);
-    document.getElementById('rotY').value = THREE.MathUtils.radToDeg(rotation.y).toFixed(2);
-    document.getElementById('rotZ').value = THREE.MathUtils.radToDeg(rotation.z).toFixed(2);
-    
-    document.getElementById('scaleX').value = scale.x.toFixed(2);
-    document.getElementById('scaleY').value = scale.y.toFixed(2);
-    document.getElementById('scaleZ').value = scale.z.toFixed(2);
 }
 
 function setTransformMode(mode) {
@@ -654,51 +628,18 @@ function setTransformMode(mode) {
     if (selectedObject) {
         transformControls.setMode(mode);
     }
-    
-    // Update button states
-    document.querySelectorAll('.tool-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
 }
 
 function initPropertyListeners() {
     // Transform mode buttons
     document.querySelectorAll('.tool-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            setTransformMode(btn.dataset.mode);
-        });
+        if (btn.dataset.mode) {
+            btn.addEventListener('click', () => {
+                setTransformMode(btn.dataset.mode);
+            });
+        }
     });
-    
-    // Property input listeners
-    const properties = ['pos', 'rot', 'scale'];
-    const axes = ['X', 'Y', 'Z'];
-    
-    properties.forEach(prop => {
-        axes.forEach(axis => {
-            const input = document.getElementById(`${prop}${axis}`);
-            if (input) {
-                input.addEventListener('change', () => {
-                    if (!selectedObject) return;
-                    
-                    const value = parseFloat(input.value);
-                    if (isNaN(value)) return;
-                    
-                    switch(prop) {
-                        case 'pos':
-                            selectedObject.position[axis.toLowerCase()] = value;
-                            break;
-                        case 'rot':
-                            selectedObject.rotation[axis.toLowerCase()] = THREE.MathUtils.degToRad(value);
-                            break;
-                        case 'scale':
-                            selectedObject.scale[axis.toLowerCase()] = value;
-                            break;
-                    }
-                });
-            }
-        });
-    });
+    // Remove property input listeners
 }
 
 function onObjectSelected(object) {
@@ -710,7 +651,6 @@ function onObjectSelected(object) {
     
     if (object) {
         transformControls.attach(object);
-        updatePropertyInputs();
     }
 }
 

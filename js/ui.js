@@ -33,6 +33,7 @@ function initializeUIElements() {
                 selectedObjects = [cube];
                 cube.material.emissive.setHex(0x555555);
                 updateGUI(cube);
+                updateObjectList();
                 console.log('Cube added and selected');
             }
         });
@@ -52,6 +53,7 @@ function initializeUIElements() {
                 selectedObjects = [sphere];
                 sphere.material.emissive.setHex(0x555555);
                 updateGUI(sphere);
+                updateObjectList();
                 console.log('Sphere added and selected');
             }
         });
@@ -71,6 +73,7 @@ function initializeUIElements() {
                 selectedObjects = [cylinder];
                 cylinder.material.emissive.setHex(0x555555);
                 updateGUI(cylinder);
+                updateObjectList();
                 console.log('Cylinder added and selected');
             }
         });
@@ -90,6 +93,7 @@ function initializeUIElements() {
                 selectedObjects = [cone];
                 cone.material.emissive.setHex(0x555555);
                 updateGUI(cone);
+                updateObjectList();
                 console.log('Cone added and selected');
             }
         });
@@ -109,6 +113,7 @@ function initializeUIElements() {
                 selectedObjects = [pyramid];
                 pyramid.material.emissive.setHex(0x555555);
                 updateGUI(pyramid);
+                updateObjectList();
                 console.log('Pyramid added and selected');
             }
         });
@@ -520,30 +525,4 @@ function updateObjectList() {
         };
         objectList.appendChild(li);
     });
-}
-
-// Patch only once
-if (!window._objectListPatched) {
-    window._objectListPatched = true;
-    const creationFns = ['createCube', 'createSphere', 'createCylinder', 'createCone', 'createPyramid'];
-    creationFns.forEach(fnName => {
-        const orig = window[fnName];
-        if (typeof orig === 'function') {
-            window[fnName] = function() {
-                const obj = orig.apply(this, arguments);
-                updateObjectList();
-                return obj;
-            };
-        }
-    });
-    const _clearSelection = window.clearSelection;
-    window.clearSelection = function() {
-        _clearSelection.apply(this, arguments);
-        updateObjectList();
-    };
-    const _selectObject = window.selectObject;
-    window.selectObject = function(obj) {
-        _selectObject.apply(this, arguments);
-        updateObjectList();
-    };
 }
