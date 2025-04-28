@@ -53,17 +53,11 @@ class DesignObject {
         this.children = [];
         this.isHole = false;
         
-        // Store original geometry for CSG operations
         if (mesh.geometry) {
             this.originalGeometry = mesh.geometry.clone();
         }
     }
 }
-
-// Camera controls
-let isDragging = false;
-let previousMousePosition = { x: 0, y: 0 };
-let rotationSpeed = 0.01;
 
 // Selection tracking
 let selectedObject = null;
@@ -84,6 +78,11 @@ let guiParams = {
 let defaultFont;
 
 let currentMode = 'move'; // 'move', 'rotate', or 'scale'
+
+// Camera controls
+let isDragging = false;
+let previousMousePosition = { x: 0, y: 0 };
+let rotationSpeed = 0.01;
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM fully loaded, initializing 3D environment');
