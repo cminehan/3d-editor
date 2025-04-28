@@ -4,7 +4,8 @@
  */
 
 // Version information
-const VERSION = '1.0.16';
+const VERSION = '1.0.23';
+window.APP_VERSION = VERSION;
 
 // Initialize the application on document load
 document.addEventListener('DOMContentLoaded', function() {
@@ -56,7 +57,9 @@ function setupVersionHistory() {
     const span = document.getElementsByClassName('close')[0];
     
     // Update version display
-    document.querySelector('.version').textContent = `v${VERSION}`;
+    document.querySelectorAll('[id^="versionNumber"]').forEach(el => {
+        el.textContent = VERSION;
+    });
     
     // Open modal
     btn.onclick = function() {
