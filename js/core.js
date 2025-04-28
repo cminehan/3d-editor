@@ -178,6 +178,16 @@ function initScene() {
         orbitControls.screenSpacePanning = true;
         orbitControls.minDistance = 1;
         orbitControls.maxDistance = 50;
+        
+        // Add event listeners for orbit controls
+        viewportContainer.addEventListener('mouseenter', () => {
+            orbitControls.enabled = true;
+        });
+        
+        viewportContainer.addEventListener('mouseleave', () => {
+            orbitControls.enabled = false;
+        });
+        
         console.log('Orbit controls initialized');
         
         // Initialize transform controls
