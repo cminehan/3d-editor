@@ -189,6 +189,23 @@ function initScene() {
         orbitControls.minDistance = 1;
         orbitControls.maxDistance = 50;
         
+        // Add event listeners for orbit controls
+        viewportContainer.addEventListener('mouseenter', () => {
+            orbitControls.enabled = true;
+        });
+        
+        viewportContainer.addEventListener('mouseleave', () => {
+            orbitControls.enabled = false;
+        });
+        
+        // Prevent orbit controls from affecting other elements
+        document.addEventListener('wheel', (event) => {
+            if (!viewportContainer.contains(event.target)) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        }, { passive: false });
+        
         // Force initial resize
         onWindowResize();
         
@@ -334,57 +351,6 @@ function onCanvasClick(event) {
     }
 }
 
-// Set up transform control buttons
-function setupTransformControls() {
-    // Initialize transform controls if not already initialized
-    if (!transformControls) {
-        transformControls = new THREE.TransformControls(camera, renderer.domElement);
-        scene.add(transformControls);
-    }
-    
-    const moveBtn = document.getElementById('moveBtn');
-    const rotateBtn = document.getElementById('rotateBtn');
-    const scaleBtn = document.getElementById('scaleBtn');
-    
-    moveBtn.addEventListener('click', function() {
-        if (selectedObject) {
-            transformControls.setMode('translate');
-            moveBtn.classList.add('active');
-            rotateBtn.classList.remove('active');
-            scaleBtn.classList.remove('active');
-        }
-    });
-    
-    rotateBtn.addEventListener('click', function() {
-        if (selectedObject) {
-            transformControls.setMode('rotate');
-            rotateBtn.classList.add('active');
-            moveBtn.classList.remove('active');
-            scaleBtn.classList.remove('active');
-        }
-    });
-    
-    scaleBtn.addEventListener('click', function() {
-        if (selectedObject) {
-            transformControls.setMode('scale');
-            scaleBtn.classList.add('active');
-            moveBtn.classList.remove('active');
-            rotateBtn.classList.remove('active');
-        }
-    });
-    
-    // Add transform controls event listeners
-    transformControls.addEventListener('dragging-changed', function(event) {
-        orbitControls.enabled = !event.value;
-    });
-    
-    transformControls.addEventListener('change', function() {
-        if (selectedObject) {
-            updatePropertyInputs();
-        }
-    });
-}
-
 // Select an object
 function selectObject(mesh) {
     console.log('Selecting object:', mesh.name);
@@ -401,9 +367,6 @@ function selectObject(mesh) {
     if (transformControls) {
         transformControls.attach(mesh);
         transformControls.visible = true;
-        
-        // Don't automatically set transform mode
-        // Let the user choose the mode
     }
     
     // Update GUI
