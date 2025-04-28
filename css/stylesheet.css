@@ -193,7 +193,8 @@ body {
     flex-direction: column;
     gap: 20px;
     overflow-y: auto;
-    height: 100%;
+    height: calc(100vh - 120px);
+    position: relative;
 }
 
 .view-controls {
@@ -248,6 +249,7 @@ body {
     border-radius: 12px;
     padding: 15px;
     margin-bottom: 20px;
+    flex-shrink: 0;
 }
 
 .properties-panel h3 {
@@ -262,6 +264,7 @@ body {
     grid-template-columns: 1fr 1fr 1fr;
     gap: 10px;
     margin-bottom: 15px;
+    flex-shrink: 0;
 }
 
 .property-group {
@@ -269,6 +272,7 @@ body {
     border-radius: 8px;
     padding: 10px;
     margin-bottom: 10px;
+    flex-shrink: 0;
 }
 
 .property-group h4 {
@@ -307,6 +311,7 @@ body {
     background: white;
     border-radius: 8px;
     padding: 10px;
+    flex-shrink: 0;
 }
 
 .help-text {

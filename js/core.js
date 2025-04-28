@@ -188,6 +188,13 @@ function initScene() {
             orbitControls.enabled = false;
         });
         
+        // Prevent orbit controls from affecting other elements
+        viewportContainer.addEventListener('wheel', (event) => {
+            if (!viewportContainer.contains(event.target)) {
+                event.stopPropagation();
+            }
+        });
+        
         console.log('Orbit controls initialized');
         
         // Initialize transform controls
@@ -323,45 +330,53 @@ function onCanvasClick(event) {
 
 // Set up transform control buttons
 function setupTransformControls() {
+    // Initialize transform controls if not already initialized
+    if (!transformControls) {
+        transformControls = new THREE.TransformControls(camera, renderer.domElement);
+        scene.add(transformControls);
+    }
+    
     const moveBtn = document.getElementById('moveBtn');
     const rotateBtn = document.getElementById('rotateBtn');
     const scaleBtn = document.getElementById('scaleBtn');
     
-    if (moveBtn) {
-        moveBtn.addEventListener('click', function() {
-            if (transformControls && selectedObject) {
-                transformControls.setMode('translate');
-                this.classList.add('active');
-                rotateBtn.classList.remove('active');
-                scaleBtn.classList.remove('active');
-                document.body.style.cursor = 'move';
-            }
-        });
-    }
+    moveBtn.addEventListener('click', function() {
+        if (selectedObject) {
+            transformControls.setMode('translate');
+            moveBtn.classList.add('active');
+            rotateBtn.classList.remove('active');
+            scaleBtn.classList.remove('active');
+        }
+    });
     
-    if (rotateBtn) {
-        rotateBtn.addEventListener('click', function() {
-            if (transformControls && selectedObject) {
-                transformControls.setMode('rotate');
-                this.classList.add('active');
-                moveBtn.classList.remove('active');
-                scaleBtn.classList.remove('active');
-                document.body.style.cursor = 'grab';
-            }
-        });
-    }
+    rotateBtn.addEventListener('click', function() {
+        if (selectedObject) {
+            transformControls.setMode('rotate');
+            rotateBtn.classList.add('active');
+            moveBtn.classList.remove('active');
+            scaleBtn.classList.remove('active');
+        }
+    });
     
-    if (scaleBtn) {
-        scaleBtn.addEventListener('click', function() {
-            if (transformControls && selectedObject) {
-                transformControls.setMode('scale');
-                this.classList.add('active');
-                moveBtn.classList.remove('active');
-                rotateBtn.classList.remove('active');
-                document.body.style.cursor = 'nwse-resize';
-            }
-        });
-    }
+    scaleBtn.addEventListener('click', function() {
+        if (selectedObject) {
+            transformControls.setMode('scale');
+            scaleBtn.classList.add('active');
+            moveBtn.classList.remove('active');
+            rotateBtn.classList.remove('active');
+        }
+    });
+    
+    // Add transform controls event listeners
+    transformControls.addEventListener('dragging-changed', function(event) {
+        orbitControls.enabled = !event.value;
+    });
+    
+    transformControls.addEventListener('change', function() {
+        if (selectedObject) {
+            updatePropertyInputs();
+        }
+    });
 }
 
 // Select an object
@@ -383,9 +398,15 @@ function selectObject(mesh) {
         
         // Set default transform mode
         transformControls.setMode('translate');
-        document.getElementById('moveBtn').classList.add('active');
-        document.getElementById('rotateBtn').classList.remove('active');
-        document.getElementById('scaleBtn').classList.remove('active');
+        
+        // Update button states
+        const moveBtn = document.getElementById('moveBtn');
+        const rotateBtn = document.getElementById('rotateBtn');
+        const scaleBtn = document.getElementById('scaleBtn');
+        
+        if (moveBtn) moveBtn.classList.add('active');
+        if (rotateBtn) rotateBtn.classList.remove('active');
+        if (scaleBtn) scaleBtn.classList.remove('active');
     }
     
     // Update GUI
