@@ -1,7 +1,7 @@
-import { FC } from 'react';
+import React, { FC } from 'react';
 
 const VersionDisplay: FC = () => {
-  const version = '1.0.9';
+  const version = '1.0.10';
   const timestamp = new Date().toISOString();
 
   return (
