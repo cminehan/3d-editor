@@ -7,7 +7,8 @@
   "license": "MIT",
   "scripts": {
     "start": "serve .",
-    "build": "echo 'No build step needed for vanilla JS'"
+    "build": "echo 'No build step needed for vanilla JS'",
+    "vercel-build": "echo 'No build step needed for vanilla JS'"
   },
   "dependencies": {
     "three": "^0.128.0",
