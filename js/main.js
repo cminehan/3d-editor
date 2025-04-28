@@ -4,7 +4,7 @@
  */
 
 // Version information
-const VERSION = '1.0.14';
+const VERSION = '1.0.15';
 
 // Initialize the application on document load
 document.addEventListener('DOMContentLoaded', function() {

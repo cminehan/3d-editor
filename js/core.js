@@ -189,11 +189,12 @@ function initScene() {
         });
         
         // Prevent orbit controls from affecting other elements
-        viewportContainer.addEventListener('wheel', (event) => {
+        document.addEventListener('wheel', (event) => {
             if (!viewportContainer.contains(event.target)) {
+                event.preventDefault();
                 event.stopPropagation();
             }
-        });
+        }, { passive: false });
         
         console.log('Orbit controls initialized');
         
@@ -318,7 +319,18 @@ function onCanvasClick(event) {
         if (intersects.length > 0) {
             const object = intersects[0].object;
             console.log('Object clicked:', object.name);
-            selectObject(object);
+            
+            // If shift is pressed, add to selection
+            if (event.shiftKey) {
+                if (!selectedObjects.includes(object)) {
+                    selectedObjects.push(object);
+                    if (object.material) {
+                        object.material.emissive.setHex(0x666666);
+                    }
+                }
+            } else {
+                selectObject(object);
+            }
         } else {
             console.log('No object clicked, deselecting');
             clearSelection();
@@ -396,17 +408,8 @@ function selectObject(mesh) {
         transformControls.attach(mesh);
         transformControls.visible = true;
         
-        // Set default transform mode
-        transformControls.setMode('translate');
-        
-        // Update button states
-        const moveBtn = document.getElementById('moveBtn');
-        const rotateBtn = document.getElementById('rotateBtn');
-        const scaleBtn = document.getElementById('scaleBtn');
-        
-        if (moveBtn) moveBtn.classList.add('active');
-        if (rotateBtn) rotateBtn.classList.remove('active');
-        if (scaleBtn) scaleBtn.classList.remove('active');
+        // Don't automatically set transform mode
+        // Let the user choose the mode
     }
     
     // Update GUI
@@ -811,4 +814,38 @@ function onObjectSelected(object) {
         transformControls.attach(object);
         updatePropertyInputs();
     }
+}
+
+// Set up combine buttons
+function setupCombineButtons() {
+    const unionBtn = document.getElementById('unionBtn');
+    const subtractBtn = document.getElementById('subtractBtn');
+    const groupBtn = document.getElementById('groupBtn');
+    
+    unionBtn.addEventListener('click', function() {
+        if (selectedObjects.length >= 2) {
+            // Perform union operation
+            console.log('Performing union operation');
+        } else {
+            console.warn('Please select at least two objects to combine');
+        }
+    });
+    
+    subtractBtn.addEventListener('click', function() {
+        if (selectedObjects.length >= 2) {
+            // Perform subtract operation
+            console.log('Performing subtract operation');
+        } else {
+            console.warn('Please select at least two objects to subtract');
+        }
+    });
+    
+    groupBtn.addEventListener('click', function() {
+        if (selectedObjects.length >= 2) {
+            // Perform group operation
+            console.log('Performing group operation');
+        } else {
+            console.warn('Please select at least two objects to group');
+        }
+    });
 }
