@@ -151,29 +151,18 @@ function initScene() {
         scene.add(objectsGroup);
         
         // Initialize camera
-        const aspect = viewportContainer.clientWidth / viewportContainer.clientHeight || 1;
+        const aspect = viewportContainer.clientWidth / viewportContainer.clientHeight;
         camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
         camera.position.set(5, 5, 5);
         camera.lookAt(0, 0, 0);
         console.log('Camera initialized');
         
         // Initialize renderer with proper pixel ratio
-        renderer = new THREE.WebGLRenderer({ 
-            antialias: true,
-            alpha: true,
-            preserveDrawingBuffer: true
-        });
+        renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(viewportContainer.clientWidth, viewportContainer.clientHeight);
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        
-        // Clear any existing canvas
-        while (viewportContainer.firstChild) {
-            viewportContainer.removeChild(viewportContainer.firstChild);
-        }
-        
-        // Add new canvas
         viewportContainer.appendChild(renderer.domElement);
         console.log('Renderer initialized');
         
@@ -189,8 +178,24 @@ function initScene() {
         orbitControls.minDistance = 1;
         orbitControls.maxDistance = 50;
         
-        // Force initial resize
-        onWindowResize();
+        // Add event listeners for orbit controls
+        viewportContainer.addEventListener('mouseenter', () => {
+            orbitControls.enabled = true;
+        });
+        
+        viewportContainer.addEventListener('mouseleave', () => {
+            orbitControls.enabled = false;
+        });
+        
+        // Prevent orbit controls from affecting other elements
+        document.addEventListener('wheel', (event) => {
+            if (!viewportContainer.contains(event.target)) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        }, { passive: false });
+        
+        console.log('Orbit controls initialized');
         
         // Initialize transform controls
         transformControls = new THREE.TransformControls(camera, renderer.domElement);
