@@ -1,40 +1,111 @@
-# 3D Editor
+# NeuroNest
 
-A modern 3D modeling tool built with React and Three.js.
+NeuroNest is an iPad application designed to support neurodivergent children with emotional regulation and sensory processing. The app provides a safe, engaging space for children to explore their emotions and develop coping strategies.
 
 ## Features
 
-- Create and manipulate 3D shapes
-- Boolean operations (union, subtract)
-- Text tools
-- Component library
-- Property panel for precise control
-- Multiple viewport options
+- **Child Mode**: Interactive activities and tools designed for neurodivergent children
+  - Calm Down Zone
+  - Mission Control
+  - Sensory Explorer
+  - Talk Time
+  - Bravery Challenge
 
-## Tech Stack
+- **Carer Mode**: Settings and progress tracking for parents and caregivers
 
-- React
-- Three.js
-- React Three Fiber
-- React Three Drei
-- React Spring
+## Development Setup
 
-## Development
+### Prerequisites
 
-1. Clone the repository
-2. Install dependencies:
+- Xcode 14.0 or later
+- iOS 16.0+ deployment target
+- iPad target device
+- [Homebrew](https://brew.sh) package manager
+- [XcodeGen](https://github.com/yonaskolb/XcodeGen)
+- [SwiftLint](https://github.com/realm/SwiftLint)
+
+### Installation
+
+1. Clone the repository:
    ```bash
-   npm install
+   git clone https://github.com/yourusername/NeuroNest.git
+   cd NeuroNest
    ```
-3. Start the development server:
+
+2. Run the setup script:
    ```bash
-   npm start
+   ./scripts/setup.sh
    ```
 
-## Deployment
+3. Open the generated Xcode project:
+   ```bash
+   open NeuroNest.xcodeproj
+   ```
 
-This project is configured for deployment on Vercel. Simply push to your GitHub repository and connect it to Vercel for automatic deployments.
+### Development Workflow
+
+1. Create a new branch for your feature:
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+
+2. Make your changes and commit them:
+   ```bash
+   git add .
+   git commit -m "Description of your changes"
+   ```
+
+3. Push your changes and create a pull request:
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+
+### Version Management
+
+Use the version management script for consistent versioning:
+
+```bash
+# Show current version
+./scripts/version_manager.sh current
+
+# Bump version (patch|minor|major)
+./scripts/version_manager.sh bump patch
+
+# Set specific version
+./scripts/version_manager.sh set 1.2.3
+```
+
+## Project Structure
+
+```
+NeuroNest/
+├── Sources/
+│   ├── App/            # App entry point and configuration
+│   ├── Views/          # SwiftUI views
+│   │   ├── Common/     # Shared components
+│   │   ├── Child/      # Child mode views
+│   │   ├── Carer/      # Carer mode views
+│   │   └── Onboarding/ # Onboarding flow
+│   ├── ViewModels/     # View models and business logic
+│   ├── Models/         # Data models
+│   ├── Utils/          # Utility functions and extensions
+│   └── Resources/      # Assets and resources
+├── Tests/              # Unit and UI tests
+└── scripts/            # Development and deployment scripts
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
 ## License
 
-MIT
+[Your License Here]
+
+## Contact
+
+[Your Contact Information]

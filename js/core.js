@@ -352,10 +352,19 @@ function initTransformControls() {
 
 // Set transform mode
 function setTransformMode(mode) {
-    if (!transformControls || !selectedObject) return;
+    if (!transformControls) return;
     
-    // Set transform mode without detaching
+    // Store current selection
+    const currentObject = transformControls.object;
+    
+    // Set transform mode
     transformControls.setMode(mode);
+    
+    // Ensure the object stays selected
+    if (currentObject) {
+        transformControls.attach(currentObject);
+        transformControls.visible = true;
+    }
     
     // Update button states
     const buttons = {
@@ -369,9 +378,6 @@ function setTransformMode(mode) {
             btn.classList.toggle('active', btnMode === mode);
         }
     });
-    
-    // Ensure controls are visible
-    transformControls.visible = true;
 }
 
 // Select an object
@@ -800,4 +806,36 @@ function setupCombineButtons() {
             console.warn('Please select at least two objects to group');
         }
     });
+}
+
+// Handle mouse wheel event for zooming
+function handleMouseWheel(event) {
+    // Check if mouse is over a UI panel
+    const isOverLeftPanel = event.target.closest('#toolbar, #textTools, #componentLibrary, .operations');
+    const isOverRightPanel = event.target.closest('.right-panel');
+    
+    if (isOverLeftPanel || isOverRightPanel) {
+        // Allow normal scrolling for UI panels
+        return true;
+    }
+    
+    // Prevent default for 3D view
+    event.preventDefault();
+    
+    // Zoom the camera
+    const zoomSpeed = 0.2;
+    const distance = Math.sqrt(
+        camera.position.x * camera.position.x + 
+        camera.position.y * camera.position.y + 
+        camera.position.z * camera.position.z
+    );
+    
+    // Limit zoom in/out
+    if ((distance > 3 || event.deltaY > 0) && (distance < 20 || event.deltaY < 0)) {
+        camera.position.x += (camera.position.x / distance) * (event.deltaY > 0 ? zoomSpeed : -zoomSpeed);
+        camera.position.y += (camera.position.y / distance) * (event.deltaY > 0 ? zoomSpeed : -zoomSpeed);
+        camera.position.z += (camera.position.z / distance) * (event.deltaY > 0 ? zoomSpeed : -zoomSpeed);
+    }
+    
+    camera.lookAt(scene.position);
 }

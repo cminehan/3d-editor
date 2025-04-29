@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Select Xcode
+      run: sudo xcode-select -s /Applications/Xcode.app
+      
+    - name: Install XcodeGen
+      run: brew install xcodegen
+      
+    - name: Generate Xcode Project
+      run: xcodegen generate
+      
+    - name: Install Dependencies
+      run: |
+        if [ -f "./Podfile" ]; then
+          pod install
+        fi
+        
+    - name: Build
+      run: |
+        xcodebuild clean build \
+          -scheme NeuroNest \
+          -destination 'platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)' \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO
+          
+    - name: Run Tests
+      run: |
+        xcodebuild test \
+          -scheme NeuroNest \
+          -destination 'platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)' \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO
+          
+    - name: SwiftLint
+      run: |
+        if which swiftlint >/dev/null; then
+          swiftlint
+        else
+          echo "warning: SwiftLint not installed"
+        fi 

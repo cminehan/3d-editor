@@ -39,81 +39,65 @@ function initializeUIElements() {
     const cubeBtn = document.getElementById('cubeBtn');
     if (cubeBtn) {
         console.log('Found cube button');
-        cubeBtn.addEventListener('click', () => {
+        cubeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             console.log('Cube button clicked');
             const cube = createCube();
             if (cube) {
                 clearSelection();
-                selectedObject = cube;
-                selectedObjects = [cube];
-                cube.material.emissive.setHex(0x555555);
-                updateGUI(cube);
+                selectObject(cube);
                 updateObjectList();
                 console.log('Cube added and selected');
             }
-        });
-    } else {
-        console.error('Cube button not found');
+        }, { once: false });
     }
 
     const sphereBtn = document.getElementById('sphereBtn');
     if (sphereBtn) {
         console.log('Found sphere button');
-        sphereBtn.addEventListener('click', () => {
+        sphereBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             console.log('Sphere button clicked');
             const sphere = createSphere();
             if (sphere) {
                 clearSelection();
-                selectedObject = sphere;
-                selectedObjects = [sphere];
-                sphere.material.emissive.setHex(0x555555);
-                updateGUI(sphere);
+                selectObject(sphere);
                 updateObjectList();
                 console.log('Sphere added and selected');
             }
-        });
-    } else {
-        console.error('Sphere button not found');
+        }, { once: false });
     }
 
     const cylinderBtn = document.getElementById('cylinderBtn');
     if (cylinderBtn) {
         console.log('Found cylinder button');
-        cylinderBtn.addEventListener('click', () => {
+        cylinderBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             console.log('Cylinder button clicked');
             const cylinder = createCylinder();
             if (cylinder) {
                 clearSelection();
-                selectedObject = cylinder;
-                selectedObjects = [cylinder];
-                cylinder.material.emissive.setHex(0x555555);
-                updateGUI(cylinder);
+                selectObject(cylinder);
                 updateObjectList();
                 console.log('Cylinder added and selected');
             }
-        });
-    } else {
-        console.error('Cylinder button not found');
+        }, { once: false });
     }
 
     const coneBtn = document.getElementById('coneBtn');
     if (coneBtn) {
         console.log('Found cone button');
-        coneBtn.addEventListener('click', () => {
+        coneBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             console.log('Cone button clicked');
             const cone = createCone();
             if (cone) {
                 clearSelection();
-                selectedObject = cone;
-                selectedObjects = [cone];
-                cone.material.emissive.setHex(0x555555);
-                updateGUI(cone);
+                selectObject(cone);
                 updateObjectList();
                 console.log('Cone added and selected');
             }
-        });
-    } else {
-        console.error('Cone button not found');
+        }, { once: false });
     }
 
     const pyramidBtn = document.getElementById('pyramidBtn');
