@@ -344,6 +344,14 @@ function initTransformControls() {
             }
         });
         
+        transformControls.addEventListener('mouseDown', function() {
+            orbitControls.enabled = false;
+        });
+        
+        transformControls.addEventListener('mouseUp', function() {
+            orbitControls.enabled = true;
+        });
+        
         // Set initial mode
         transformControls.setMode('translate');
         transformControls.visible = false;
@@ -352,19 +360,15 @@ function initTransformControls() {
 
 // Set transform mode
 function setTransformMode(mode) {
-    if (!transformControls) return;
+    if (!transformControls || !selectedObject) return;
     
     // Store current selection
-    const currentObject = transformControls.object;
+    const currentObject = selectedObject;
     
     // Set transform mode
     transformControls.setMode(mode);
-    
-    // Ensure the object stays selected
-    if (currentObject) {
-        transformControls.attach(currentObject);
-        transformControls.visible = true;
-    }
+    transformControls.attach(currentObject);
+    transformControls.visible = true;
     
     // Update button states
     const buttons = {
@@ -389,9 +393,7 @@ function selectObject(mesh) {
     
     // Set new selection
     selectedObject = mesh;
-    if (!selectedObjects.includes(mesh)) {
-        selectedObjects.push(mesh);
-    }
+    selectedObjects = [mesh];
     
     // Highlight selected object
     if (mesh.material) {
@@ -402,6 +404,7 @@ function selectObject(mesh) {
     if (transformControls) {
         transformControls.attach(mesh);
         transformControls.visible = true;
+        transformControls.setMode('translate'); // Default to translate mode
     }
     
     // Update object list
@@ -727,26 +730,53 @@ function setActiveViewport(view) {
         return;
     }
     
+    // Reset orbit controls target
+    orbitControls.target.set(0, 0, 0);
+    
+    // Store current camera properties
+    const currentFOV = camera.fov;
+    const currentNear = camera.near;
+    const currentFar = camera.far;
+    
     switch(view) {
         case 'perspective':
             camera.position.set(5, 5, 5);
             camera.lookAt(0, 0, 0);
+            camera.fov = 75;
             break;
         case 'top':
             camera.position.set(0, 10, 0);
             camera.lookAt(0, 0, 0);
+            camera.up.set(0, 0, -1); // Adjust up vector for top view
+            camera.fov = 50;
             break;
         case 'front':
             camera.position.set(0, 0, 10);
             camera.lookAt(0, 0, 0);
+            camera.up.set(0, 1, 0); // Reset up vector
+            camera.fov = 50;
             break;
         case 'side':
             camera.position.set(10, 0, 0);
             camera.lookAt(0, 0, 0);
+            camera.up.set(0, 1, 0); // Reset up vector
+            camera.fov = 50;
             break;
     }
     
+    // Update camera if properties changed
+    if (camera.fov !== currentFOV || camera.near !== currentNear || camera.far !== currentFar) {
+        camera.updateProjectionMatrix();
+    }
+    
+    // Force controls update
     orbitControls.update();
+    
+    // Update renderer
+    if (renderer) {
+        renderer.render(scene, camera);
+    }
+    
     console.log('Viewport updated:', view);
 }
 
@@ -838,4 +868,42 @@ function handleMouseWheel(event) {
     }
     
     camera.lookAt(scene.position);
+}
+
+// Delete selected object
+function deleteSelectedObject() {
+    if (!selectedObject) {
+        console.warn('No object selected for deletion');
+        return;
+    }
+    
+    try {
+        console.log('Deleting object:', selectedObject.name);
+        
+        // Remove from scene
+        objectsGroup.remove(selectedObject);
+        
+        // Remove from objects array
+        const index = objects.findIndex(obj => obj.mesh === selectedObject);
+        if (index > -1) {
+            objects.splice(index, 1);
+        }
+        
+        // Clear selection and transform controls
+        if (transformControls) {
+            transformControls.detach();
+            transformControls.visible = false;
+        }
+        
+        selectedObject = null;
+        selectedObjects = [];
+        
+        // Update UI
+        updateObjectList();
+        resetGUI();
+        
+        console.log('Object deleted successfully');
+    } catch (error) {
+        console.error('Error deleting object:', error);
+    }
 }

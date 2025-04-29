@@ -5,82 +5,70 @@
 
 // Create a cube
 function createCube() {
-    console.log('Creating cube...');
     const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshPhongMaterial({ 
-        color: 0x2196F3, // Bright blue
-        shininess: 30,
-        transparent: true,
-        opacity: 1.0
+    const material = new THREE.MeshStandardMaterial({ 
+        color: 0x00ff00,
+        metalness: 0.1,
+        roughness: 0.5
     });
     const cube = new THREE.Mesh(geometry, material);
-    cube.position.set(0, 0.5, 0); // Position at half height
+    cube.name = 'cube_' + Date.now();
     cube.castShadow = true;
     cube.receiveShadow = true;
-    cube.name = 'cube_' + Date.now();
-    cube.userData = { type: 'cube' };
     
-    // Add to scene and objectsGroup
+    // Add to scene
     objectsGroup.add(cube);
     
+    // Create object data
     const obj = new DesignObject(cube, 'cube');
     objects.push(obj);
     
-    console.log('Cube created successfully:', cube.name);
     return cube;
 }
 
 // Create a sphere
 function createSphere() {
-    console.log('Creating sphere...');
     const geometry = new THREE.SphereGeometry(0.5, 32, 32);
-    const material = new THREE.MeshPhongMaterial({ 
-        color: 0x4CAF50, // Bright green
-        shininess: 30,
-        transparent: true,
-        opacity: 1.0
+    const material = new THREE.MeshStandardMaterial({ 
+        color: 0xff0000,
+        metalness: 0.1,
+        roughness: 0.5
     });
     const sphere = new THREE.Mesh(geometry, material);
-    sphere.position.set(0, 0.5, 0); // Position at half height
+    sphere.name = 'sphere_' + Date.now();
     sphere.castShadow = true;
     sphere.receiveShadow = true;
-    sphere.name = 'sphere_' + Date.now();
-    sphere.userData = { type: 'sphere' };
     
-    // Add to scene and objectsGroup
+    // Add to scene
     objectsGroup.add(sphere);
     
+    // Create object data
     const obj = new DesignObject(sphere, 'sphere');
     objects.push(obj);
     
-    console.log('Sphere created successfully:', sphere.name);
     return sphere;
 }
 
 // Create a cylinder
 function createCylinder() {
-    console.log('Creating cylinder...');
     const geometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 32);
-    const material = new THREE.MeshPhongMaterial({ 
-        color: 0xFFC107, // Bright amber
-        shininess: 30,
-        transparent: true,
-        opacity: 1.0
+    const material = new THREE.MeshStandardMaterial({ 
+        color: 0x0000ff,
+        metalness: 0.1,
+        roughness: 0.5
     });
     const cylinder = new THREE.Mesh(geometry, material);
-    cylinder.position.set(0, 0.5, 0); // Position at half height
+    cylinder.name = 'cylinder_' + Date.now();
     cylinder.castShadow = true;
     cylinder.receiveShadow = true;
-    cylinder.name = 'cylinder_' + Date.now();
-    cylinder.userData = { type: 'cylinder' };
     
-    // Add to scene and objectsGroup
+    // Add to scene
     objectsGroup.add(cylinder);
     
+    // Create object data
     const obj = new DesignObject(cylinder, 'cylinder');
     objects.push(obj);
     
-    console.log('Cylinder created successfully:', cylinder.name);
     return cylinder;
 }
 
@@ -113,28 +101,24 @@ function createPyramid() {
 
 // Create a cone
 function createCone() {
-    console.log('Creating cone...');
     const geometry = new THREE.ConeGeometry(0.5, 1, 32);
-    const material = new THREE.MeshPhongMaterial({ 
-        color: 0x00BCD4, // Cyan
-        shininess: 30,
-        transparent: true,
-        opacity: 1.0
+    const material = new THREE.MeshStandardMaterial({ 
+        color: 0xffff00,
+        metalness: 0.1,
+        roughness: 0.5
     });
     const cone = new THREE.Mesh(geometry, material);
-    cone.position.set(0, 0.5, 0); // Position at half height
+    cone.name = 'cone_' + Date.now();
     cone.castShadow = true;
     cone.receiveShadow = true;
-    cone.name = 'cone_' + Date.now();
-    cone.userData = { type: 'cone' };
     
-    // Add to scene and objectsGroup
+    // Add to scene
     objectsGroup.add(cone);
     
+    // Create object data
     const obj = new DesignObject(cone, 'cone');
     objects.push(obj);
     
-    console.log('Cone created successfully:', cone.name);
     return cone;
 }
 
