@@ -10,11 +10,26 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('mousedown', handleMouseDown);
     document.addEventListener('mouseup', handleMouseUp);
     document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('wheel', handleMouseWheel);
+    document.addEventListener('wheel', handleMouseWheel, { passive: false });
 
     // Initialize UI elements
     initializeUIElements();
     updateObjectList();
+
+    // Wait for GUI to be created
+    setTimeout(preventBubbling, 500);
+
+    // Add help tooltip close functionality
+    document.getElementById('closeHelp').addEventListener('click', function() {
+        document.querySelector('.help-tooltip').style.display = 'none';
+        // Save preference to localStorage
+        localStorage.setItem('helpTooltipClosed', 'true');
+    });
+
+    // Check if tooltip should be hidden
+    if (localStorage.getItem('helpTooltipClosed') === 'true') {
+        document.querySelector('.help-tooltip').style.display = 'none';
+    }
 });
 
 function initializeUIElements() {
@@ -343,6 +358,11 @@ function initializeUIElements() {
 
 // Handle mouse down event
 function handleMouseDown(event) {
+    // Ignore clicks on UI elements
+    if (event.target.closest('#toolbar, #textTools, #componentLibrary, .operations, .dg')) {
+        return;
+    }
+    
     isDragging = true;
     previousMousePosition = {
         x: event.clientX,
@@ -356,9 +376,9 @@ function handleMouseDown(event) {
     // Update the picking ray with the camera and mouse position
     raycaster.setFromCamera(mouse, camera);
     
-    // Calculate objects intersecting the picking ray, exclude the grid
+    // Calculate objects intersecting the picking ray, exclude the grid and plane
     const intersects = raycaster.intersectObjects(objectsGroup.children, true)
-        .filter(intersect => !(intersect.object === gridHelper));
+        .filter(intersect => !(intersect.object === gridHelper || intersect.object === plane));
     
     if (intersects.length > 0) {
         // If shift is pressed, add to selection
@@ -382,6 +402,8 @@ function handleMouseDown(event) {
                 // Also update the single selection
                 selectedObject = targetObject;
                 updateGUI(targetObject);
+                
+                console.log(`Selected object added. Total: ${selectedObjects.length}`);
             } else {
                 // Remove from selection
                 selectedObjects.splice(index, 1);
@@ -397,6 +419,8 @@ function handleMouseDown(event) {
                     selectedObject = null;
                     resetGUI();
                 }
+                
+                console.log(`Selected object removed. Total: ${selectedObjects.length}`);
             }
         } else {
             // Clear previous selection
@@ -418,9 +442,11 @@ function handleMouseDown(event) {
             }
             
             updateGUI(targetObject);
+            console.log("Single object selected");
         }
-    } else if (!event.shiftKey) {
+    } else if (!event.shiftKey && !event.target.closest('.dg')) {
         // Click on empty space without shift - clear selection
+        // But don't clear if clicking on dat.GUI
         clearSelection();
     }
 }
@@ -461,6 +487,15 @@ function handleMouseMove(event) {
 
 // Handle mouse wheel event for zooming
 function handleMouseWheel(event) {
+    // Check if mouse is over a UI panel
+    const isOverUIPanel = event.target.closest('#toolbar, #textTools, #componentLibrary, .operations, .dg');
+    
+    if (isOverUIPanel) {
+        // Allow normal scrolling for UI panels
+        return true;
+    }
+    
+    // Zoom the camera
     const zoomSpeed = 0.2;
     const distance = Math.sqrt(
         camera.position.x * camera.position.x + 
@@ -476,6 +511,7 @@ function handleMouseWheel(event) {
     }
     
     camera.lookAt(scene.position);
+    event.preventDefault();
 }
 
 // Switch between UI tabs
@@ -525,4 +561,27 @@ function updateObjectList() {
         };
         objectList.appendChild(li);
     });
+}
+
+// Prevent UI controls from interfering with object selection
+function preventBubbling() {
+  // Apply to all buttons and interactive elements
+  document.querySelectorAll('.operations button, #toolbar button, #textTools input, #textTools button, #componentLibrary .component-item')
+    .forEach(element => {
+      element.addEventListener('click', function(event) {
+        // Stop propagation to prevent deselection
+        event.stopPropagation();
+      });
+    });
+  
+  // Also prevent dat.GUI from interfering with selection
+  if (gui && gui.domElement) {
+    gui.domElement.addEventListener('mousedown', function(e) {
+      e.stopPropagation();
+    }, true);
+    
+    gui.domElement.addEventListener('click', function(e) {
+      e.stopPropagation();
+    }, true);
+  }
 }

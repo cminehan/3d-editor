@@ -406,9 +406,22 @@ function selectObject(mesh) {
     updateObjectList();
 }
 
-// Clear selection
+// Update the selection indicator
+function updateSelectionIndicator() {
+    const indicator = document.getElementById('selection-indicator');
+    if (!indicator) return;
+    
+    if (selectedObjects.length === 0) {
+        indicator.textContent = "No objects selected";
+    } else if (selectedObjects.length === 1) {
+        indicator.textContent = "1 object selected";
+    } else {
+        indicator.textContent = `${selectedObjects.length} objects selected`;
+    }
+}
+
+// Utility function to clear selection
 function clearSelection() {
-    console.log('Clearing selection');
     if (selectedObjects.length > 0) {
         for (let obj of selectedObjects) {
             if (obj.material) {
@@ -419,13 +432,105 @@ function clearSelection() {
     }
     
     selectedObject = null;
-    if (transformControls) {
-        transformControls.detach();
-        transformControls.visible = false;
+    resetGUI();
+    updateSelectionIndicator();
+}
+
+// Handle mouse down event
+function handleMouseDown(event) {
+    // Ignore clicks on UI elements
+    if (event.target.closest('#toolbar, #textTools, #componentLibrary, .operations, .dg')) {
+        return;
     }
     
-    // Update object list
-    updateObjectList();
+    isDragging = true;
+    previousMousePosition = {
+        x: event.clientX,
+        y: event.clientY
+    };
+    
+    // For selection
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    
+    // Update the picking ray with the camera and mouse position
+    raycaster.setFromCamera(mouse, camera);
+    
+    // Calculate objects intersecting the picking ray, exclude the grid and plane
+    const intersects = raycaster.intersectObjects(objectsGroup.children, true)
+        .filter(intersect => !(intersect.object === gridHelper || intersect.object === plane));
+    
+    if (intersects.length > 0) {
+        // If shift is pressed, add to selection
+        if (event.shiftKey) {
+            let targetObject = intersects[0].object;
+            
+            // If object is part of a group, select the top-level group
+            while (targetObject.parent && targetObject.parent !== objectsGroup) {
+                targetObject = targetObject.parent;
+            }
+            
+            // Check if already selected
+            const index = selectedObjects.indexOf(targetObject);
+            if (index === -1) {
+                // Add to selection
+                selectedObjects.push(targetObject);
+                if (targetObject.material) {
+                    targetObject.material.emissive.setHex(0x555555);
+                }
+                
+                // Also update the single selection
+                selectedObject = targetObject;
+                updateGUI(targetObject);
+                
+                console.log(`Selected object added. Total: ${selectedObjects.length}`);
+            } else {
+                // Remove from selection
+                selectedObjects.splice(index, 1);
+                if (targetObject.material) {
+                    targetObject.material.emissive.setHex(0x000000);
+                }
+                
+                // Update the single selection to the last selected if any
+                if (selectedObjects.length > 0) {
+                    selectedObject = selectedObjects[selectedObjects.length - 1];
+                    updateGUI(selectedObject);
+                } else {
+                    selectedObject = null;
+                    resetGUI();
+                }
+                
+                console.log(`Selected object removed. Total: ${selectedObjects.length}`);
+            }
+        } else {
+            // Clear previous selection
+            clearSelection();
+            
+            // Select new object
+            let targetObject = intersects[0].object;
+            
+            // If object is part of a group, select the top-level group
+            while (targetObject.parent && targetObject.parent !== objectsGroup) {
+                targetObject = targetObject.parent;
+            }
+            
+            selectedObject = targetObject;
+            selectedObjects = [targetObject];
+            
+            if (targetObject.material) {
+                targetObject.material.emissive.setHex(0x555555);
+            }
+            
+            updateGUI(targetObject);
+            console.log("Single object selected");
+        }
+    } else if (!event.shiftKey && !event.target.closest('.dg')) {
+        // Click on empty space without shift - clear selection
+        // But don't clear if clicking on dat.GUI
+        clearSelection();
+    }
+    
+    updateSelectionIndicator();
 }
 
 // Helper function to get random color
