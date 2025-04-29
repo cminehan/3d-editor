@@ -354,10 +354,7 @@ function initTransformControls() {
 function setTransformMode(mode) {
     if (!transformControls || !selectedObject) return;
     
-    // Store current selection
-    const currentObject = selectedObject;
-    
-    // Set transform mode
+    // Set transform mode without detaching
     transformControls.setMode(mode);
     
     // Update button states
@@ -373,8 +370,7 @@ function setTransformMode(mode) {
         }
     });
     
-    // Reattach transform controls to maintain selection
-    transformControls.attach(currentObject);
+    // Ensure controls are visible
     transformControls.visible = true;
 }
 

@@ -488,10 +488,11 @@ function handleMouseMove(event) {
 // Handle mouse wheel event for zooming
 function handleMouseWheel(event) {
     // Check if mouse is over a UI panel
-    const isOverUIPanel = event.target.closest('#toolbar, #textTools, #componentLibrary, .operations, .dg');
+    const isOverUIPanel = event.target.closest('#toolbar, #textTools, #componentLibrary, .operations, .dg, .right-panel');
     
     if (isOverUIPanel) {
         // Allow normal scrolling for UI panels
+        event.stopPropagation();
         return true;
     }
     
