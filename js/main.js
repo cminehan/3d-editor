@@ -4,8 +4,10 @@
  */
 
 // Version information - single source of truth
-const VERSION = '1.0.24';
+const VERSION = '1.1.0';
+const VERSION_CACHE = '1.1.0.1';  // For cache busting
 window.APP_VERSION = VERSION;
+window.APP_VERSION_CACHE = VERSION_CACHE;
 
 // Initialize the application on document load
 document.addEventListener('DOMContentLoaded', function() {

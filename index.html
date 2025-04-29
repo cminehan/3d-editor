@@ -9,8 +9,37 @@
     <title>3D Creator Studio</title>
     <link rel="icon" href="assets/favicon.ico">
     
+    <!-- Load version first -->
+    <script src="js/main.js"></script>
+    
+    <script>
+        // Function to add version to URLs
+        function addVersionToUrls() {
+            const version = window.APP_VERSION_CACHE || '1.1.0.1';
+            const links = document.getElementsByTagName('link');
+            const scripts = document.getElementsByTagName('script');
+            
+            // Add version to CSS files
+            for (let link of links) {
+                if (link.rel === 'stylesheet' && !link.href.includes('unpkg.com')) {
+                    link.href = link.href.split('?')[0] + '?v=' + version;
+                }
+            }
+            
+            // Add version to JS files
+            for (let script of scripts) {
+                if (script.src && !script.src.includes('unpkg.com') && !script.src.includes('cdnjs.cloudflare.com')) {
+                    script.src = script.src.split('?')[0] + '?v=' + version;
+                }
+            }
+        }
+        
+        // Call after DOM loads
+        document.addEventListener('DOMContentLoaded', addVersionToUrls);
+    </script>
+    
     <!-- External CSS -->
-    <link rel="stylesheet" href="css/stylesheet.css?v=1.1.0.1">
+    <link rel="stylesheet" href="css/stylesheet.css">
     
     <!-- External Libraries -->
     <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
@@ -22,13 +51,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three-csg-ts/3.1.13/three-csg.min.js"></script>
     
     <!-- Application Scripts -->
-    <script src="js/core.js?v=1.1.0.1"></script>
-    <script src="js/shapes.js?v=1.1.0.1"></script>
-    <script src="js/components.js?v=1.1.0.1"></script>
-    <script src="js/boolean-operations.js?v=1.1.0.1"></script>
-    <script src="js/ui.js?v=1.1.0.1"></script>
-    <script src="js/main.js?v=1.1.0.1"></script>
-    <script src="js/debug.js?v=1.1.0.1"></script>
+    <script src="js/core.js"></script>
+    <script src="js/shapes.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/boolean-operations.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/debug.js"></script>
 </head>
 <body>
     <div class="header">
