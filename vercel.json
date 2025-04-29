@@ -15,7 +15,7 @@
       "dest": "/js/$1",
       "headers": {
         "Content-Type": "application/javascript",
-        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
         "Pragma": "no-cache",
         "Expires": "0"
       }
@@ -25,7 +25,7 @@
       "dest": "/css/$1",
       "headers": {
         "Content-Type": "text/css",
-        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
         "Pragma": "no-cache",
         "Expires": "0"
       }
@@ -34,7 +34,7 @@
       "src": "/assets/(.*)",
       "dest": "/assets/$1",
       "headers": {
-        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
         "Pragma": "no-cache",
         "Expires": "0"
       }
@@ -43,7 +43,7 @@
       "src": "/favicon.ico",
       "dest": "/favicon.ico",
       "headers": {
-        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
         "Pragma": "no-cache",
         "Expires": "0"
       }
@@ -52,7 +52,7 @@
       "src": "/manifest.json",
       "dest": "/manifest.json",
       "headers": {
-        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
         "Pragma": "no-cache",
         "Expires": "0"
       }
@@ -61,7 +61,7 @@
       "src": "/logo192.png",
       "dest": "/logo192.png",
       "headers": {
-        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
         "Pragma": "no-cache",
         "Expires": "0"
       }
@@ -70,7 +70,7 @@
       "src": "/logo512.png",
       "dest": "/logo512.png",
       "headers": {
-        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
         "Pragma": "no-cache",
         "Expires": "0"
       }
@@ -79,7 +79,7 @@
       "src": "/(.*)",
       "dest": "/$1",
       "headers": {
-        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
         "Pragma": "no-cache",
         "Expires": "0"
       }
